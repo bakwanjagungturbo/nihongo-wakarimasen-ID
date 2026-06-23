@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K. Sifat Bahasa Jepang</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f0f14;
+    --bg2: #16161e;
+    --bg3: #1e1e2a;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #e8e6f0;
+    --muted: #8a87a0;
+    --accent: #7c6af7;
+    --accent2: #a594ff;
+    --accent-glow: rgba(124,106,247,0.18);
+    --green: #4ade9a;
+    --green-bg: rgba(74,222,154,0.1);
+    --red: #f87171;
+    --red-bg: rgba(248,113,113,0.1);
+    --yellow: #fbbf24;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* NAV */
+  nav {
+    display: flex;
+    gap: 4px;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-logo {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent2);
+    letter-spacing: -0.5px;
+    margin-right: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .nav-logo span { font-size: 22px; }
+  .tab-btn {
+    padding: 7px 16px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.15s;
+  }
+  .tab-btn:hover { background: var(--bg3); color: var(--text); }
+  .tab-btn.active {
+    background: var(--accent-glow);
+    border-color: var(--accent);
+    color: var(--accent2);
+  }
+
+  /* PAGES */
+  .page { display: none; padding: 32px 24px; max-width: 960px; margin: 0 auto; width: 100%; }
+  .page.active { display: block; }
+
+  /* ── SEGMEN 1: DAFTAR ── */
+  .page-header { margin-bottom: 24px; }
+  .page-header h1 { font-size: 26px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+  .page-header p { color: var(--muted); margin-top: 4px; font-size: 14px; }
+
+  .search-bar {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border2);
+    background: var(--bg2);
+    color: var(--text);
+    font-size: 14px;
+    margin-bottom: 20px;
+    outline: none;
+    transition: border 0.15s;
+  }
+  .search-bar:focus { border-color: var(--accent); }
+  .search-bar::placeholder { color: var(--muted); }
+
+  .vocab-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+  }
+  .vocab-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    transition: border-color 0.15s, transform 0.1s;
+  }
+  .vocab-card:hover { border-color: var(--border2); transform: translateY(-1px); }
+  .vocab-no { font-size: 11px; color: var(--muted); margin-bottom: 6px; font-variant-numeric: tabular-nums; }
+  .vocab-jp { font-size: 22px; color: var(--text); margin-bottom: 4px; letter-spacing: 1px; }
+  .vocab-id { font-size: 12px; color: var(--accent2); font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; }
+
+  /* ── SEGMEN 2: FLASHCARD ── */
+  .fc-wrap { display: flex; flex-direction: column; align-items: center; gap: 24px; padding-top: 12px; }
+  .fc-progress-bar-wrap { width: 100%; max-width: 480px; background: var(--bg2); border-radius: 99px; height: 4px; overflow: hidden; }
+  .fc-progress-bar { height: 4px; background: var(--accent); border-radius: 99px; transition: width 0.3s; }
+  .fc-counter { font-size: 13px; color: var(--muted); }
+
+  .flashcard-scene {
+    width: 100%;
+    max-width: 480px;
+    height: 260px;
+    perspective: 1200px;
+    cursor: pointer;
+  }
+  .flashcard-inner {
+    width: 100%; height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.45s cubic-bezier(.4,0,.2,1);
+  }
+  .flashcard-inner.flipped { transform: rotateY(180deg); }
+  .fc-face {
+    position: absolute; inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 24px;
+  }
+  .fc-face.back { transform: rotateY(180deg); background: var(--bg3); border-color: var(--accent); }
+  .fc-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+  .fc-main { font-size: 52px; color: var(--text); letter-spacing: 2px; text-align: center; }
+  .fc-main.id { font-size: 24px; color: var(--accent2); font-weight: 600; text-align: center; letter-spacing: 0; }
+  .fc-hint { font-size: 12px; color: var(--muted); }
+
+  .fc-controls { display: flex; gap: 12px; align-items: center; }
+  .fc-btn {
+    padding: 10px 24px;
+    border-radius: 10px;
+    border: 1px solid var(--border2);
+    background: var(--bg2);
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .fc-btn:hover { background: var(--bg3); border-color: var(--accent); color: var(--accent2); }
+  .fc-btn.primary { background: var(--accent-glow); border-color: var(--accent); color: var(--accent2); }
+  .fc-shuffle-btn {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .fc-shuffle-btn:hover { color: var(--text); border-color: var(--border2); }
+
+  /* ── SEGMEN 3: QUIZ ── */
+  .quiz-wrap { display: flex; flex-direction: column; align-items: center; gap: 20px; padding-top: 12px; }
+  .quiz-score-row { display: flex; gap: 20px; }
+  .score-pill {
+    padding: 5px 14px;
+    border-radius: 99px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .score-correct { background: var(--green-bg); color: var(--green); }
+  .score-wrong { background: var(--red-bg); color: var(--red); }
+
+  .quiz-card {
+    width: 100%;
+    max-width: 520px;
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+  .quiz-prompt-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+  .quiz-prompt { font-size: 28px; font-weight: 700; color: var(--text); text-align: center; }
+  .quiz-subprompt { font-size: 13px; color: var(--muted); text-align: center; }
+
+  .quiz-input-wrap { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+  .quiz-input {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1.5px solid var(--border2);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 26px;
+    text-align: center;
+    letter-spacing: 2px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .quiz-input:focus { border-color: var(--accent); }
+  .quiz-input.correct { border-color: var(--green); background: var(--green-bg); }
+  .quiz-input.wrong { border-color: var(--red); background: var(--red-bg); }
+
+  .quiz-submit {
+    width: 100%;
+    padding: 13px;
+    border-radius: 12px;
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .quiz-submit:hover { opacity: 0.9; }
+  .quiz-submit:disabled { opacity: 0.4; cursor: default; }
+
+  .quiz-feedback {
+    width: 100%;
+    max-width: 520px;
+    border-radius: 14px;
+    padding: 14px 18px;
+    font-size: 14px;
+    display: none;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.correct { background: var(--green-bg); border: 1px solid rgba(74,222,154,0.2); color: var(--green); }
+  .quiz-feedback.wrong { background: var(--red-bg); border: 1px solid rgba(248,113,113,0.2); color: var(--red); }
+  .feedback-answer { font-size: 22px; font-weight: 700; margin-top: 4px; }
+
+  .quiz-next-btn {
+    padding: 10px 28px;
+    border-radius: 10px;
+    border: 1px solid var(--accent);
+    background: var(--accent-glow);
+    color: var(--accent2);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: none;
+  }
+  .quiz-next-btn.show { display: inline-block; }
+  .quiz-next-btn:hover { background: var(--accent); color: #fff; }
+
+  .quiz-result {
+    width: 100%;
+    max-width: 520px;
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    padding: 40px 32px;
+    text-align: center;
+    display: none;
+  }
+  .quiz-result.show { display: block; }
+  .result-emoji { font-size: 48px; margin-bottom: 12px; }
+  .result-title { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+  .result-sub { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+  .result-stats { display: flex; justify-content: center; gap: 32px; margin-bottom: 28px; }
+  .result-stat { display: flex; flex-direction: column; gap: 4px; }
+  .result-stat-n { font-size: 36px; font-weight: 700; }
+  .result-stat-l { font-size: 12px; color: var(--muted); }
+  .restart-btn {
+    padding: 12px 32px;
+    border-radius: 12px;
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .restart-btn:hover { opacity: 0.9; }
+
+  @media (max-width: 600px) {
+    nav { padding: 12px 14px; flex-wrap: wrap; gap: 6px; }
+    .tab-btn { padding: 6px 11px; font-size: 12px; }
+    .page { padding: 20px 14px; }
+    .vocab-grid { grid-template-columns: repeat(2, 1fr); }
+    .fc-main { font-size: 40px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo"><span>🇯🇵</span> K. Sifat</div>
+  <button class="tab-btn active" onclick="showPage('list')">① Daftar</button>
+  <button class="tab-btn" onclick="showPage('flash')">② Flashcard</button>
+  <button class="tab-btn" onclick="showPage('quiz')">③ Quiz</button>
+</nav>
+
+<!-- SEGMEN 1 -->
+<div class="page active" id="page-list">
+  <div class="page-header">
+    <h1>Kata Sifat — 形容詞</h1>
+    <p>70 kata sifat lengkap dengan artinya</p>
+  </div>
+  <input class="search-bar" id="searchInput" placeholder="Cari kata atau arti..." oninput="filterVocab()">
+  <div class="vocab-grid" id="vocabGrid"></div>
+</div>
+
+<!-- SEGMEN 2 -->
+<div class="page" id="page-flash">
+  <div class="page-header">
+    <h1>Flashcard</h1>
+    <p>Klik kartu untuk balik. Hafal satu per satu.</p>
+  </div>
+  <div class="fc-wrap">
+    <div style="display:flex;justify-content:space-between;align-items:center;width:100%;max-width:480px;">
+      <span class="fc-counter" id="fcCounter">1 / 70</span>
+      <button class="fc-shuffle-btn" onclick="shuffleFlash()">🔀 Acak</button>
+    </div>
+    <div class="fc-progress-bar-wrap"><div class="fc-progress-bar" id="fcBar" style="width:1.4%"></div></div>
+
+    <div class="flashcard-scene" onclick="flipCard()">
+      <div class="flashcard-inner" id="fcInner">
+        <div class="fc-face front">
+          <div class="fc-label">にほんご</div>
+          <div class="fc-main" id="fcFront">きれいな</div>
+          <div class="fc-hint">klik untuk lihat arti</div>
+        </div>
+        <div class="fc-face back">
+          <div class="fc-label">いみ (arti)</div>
+          <div class="fc-main id" id="fcBack">CANTIK</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fc-controls">
+      <button class="fc-btn" onclick="prevCard()">← Prev</button>
+      <button class="fc-btn primary" onclick="nextCard()">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- SEGMEN 3 -->
+<div class="page" id="page-quiz">
+  <div class="page-header">
+    <h1>Quiz</h1>
+    <p>Baca arti, tulis dalam bahasa Jepang (hiragana/katakana).</p>
+  </div>
+  <div class="quiz-wrap" id="quizWrap">
+    <div class="quiz-score-row">
+      <div class="score-pill score-correct">✓ <span id="qCorrect">0</span></div>
+      <div class="score-pill score-wrong">✗ <span id="qWrong">0</span></div>
+      <span class="fc-counter" id="qCounter">0 / 70</span>
+    </div>
+    <div class="fc-progress-bar-wrap" style="max-width:520px;">
+      <div class="fc-progress-bar" id="qBar" style="width:0%"></div>
+    </div>
+
+    <div class="quiz-card" id="quizCard">
+      <div class="quiz-prompt-label">Arti dalam bahasa Indonesia</div>
+      <div class="quiz-prompt" id="qPrompt">CANTIK</div>
+      <div class="quiz-subprompt" id="qSub">Tulis dalam hiragana</div>
+      <div class="quiz-input-wrap">
+        <input class="quiz-input" id="qInput" placeholder="tulis di sini..." autocomplete="off"
+               onkeydown="if(event.key==='Enter') submitAnswer()">
+        <button class="quiz-submit" id="qSubmit" onclick="submitAnswer()">Cek Jawaban</button>
+      </div>
+    </div>
+
+    <div class="quiz-feedback" id="qFeedback">
+      <div id="qFeedbackText"></div>
+      <div class="feedback-answer" id="qFeedbackAnswer"></div>
+    </div>
+    <button class="quiz-next-btn" id="qNext" onclick="nextQuiz()">Soal berikutnya →</button>
+
+    <div class="quiz-result" id="quizResult">
+      <div class="result-emoji" id="resultEmoji">🎉</div>
+      <div class="result-title" id="resultTitle">Quiz selesai!</div>
+      <div class="result-sub" id="resultSub"></div>
+      <div class="result-stats">
+        <div class="result-stat">
+          <div class="result-stat-n" style="color:var(--green)" id="rCorrect">0</div>
+          <div class="result-stat-l">Benar</div>
+        </div>
+        <div class="result-stat">
+          <div class="result-stat-n" style="color:var(--red)" id="rWrong">0</div>
+          <div class="result-stat-l">Salah</div>
+        </div>
+        <div class="result-stat">
+          <div class="result-stat-n" style="color:var(--yellow)" id="rPct">0%</div>
+          <div class="result-stat-l">Skor</div>
+        </div>
+      </div>
+      <button class="restart-btn" onclick="restartQuiz()">Ulangi Quiz</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const vocab = [
+  {jp:"きれいな", id:"CANTIK"},
+  {jp:"ハンサムな", id:"TAMPAN"},
+  {jp:"しんせつな", id:"BAIK HATI / RAMAH"},
+  {jp:"げんきな", id:"SEHAT"},
+  {jp:"ゆめいな", id:"TERKENAL"},
+  {jp:"にぎやかな", id:"RAMAI"},
+  {jp:"しずかな", id:"TENANG / SEPI"},
+  {jp:"たのしい", id:"GEMBIRA"},
+  {jp:"おおきい", id:"BESAR"},
+  {jp:"ちいさい", id:"KECIL"},
+  {jp:"あたらしい", id:"BARU"},
+  {jp:"ふるい", id:"LAMA / USANG"},
+  {jp:"いい", id:"BAGUS"},
+  {jp:"わるい", id:"JELEK"},
+  {jp:"あつい", id:"PANAS (SUHU)"},
+  {jp:"さむい", id:"DINGIN (SUHU)"},
+  {jp:"つめたい", id:"DINGIN (BENDA)"},
+  {jp:"やさしい", id:"MUDAH"},
+  {jp:"むずかしい", id:"SULIT"},
+  {jp:"たかい", id:"TINGGI"},
+  {jp:"ひくい", id:"RENDAH / PENDEK"},
+  {jp:"たかい", id:"MAHAL"},
+  {jp:"やすい", id:"MURAH"},
+  {jp:"おもしろい", id:"MENARIK"},
+  {jp:"つまらない", id:"MEMBOSANKAN"},
+  {jp:"おいしい", id:"ENAK"},
+  {jp:"まずい", id:"HAMBAR / TIDAK ENAK"},
+  {jp:"しろい", id:"PUTIH"},
+  {jp:"くろい", id:"HITAM"},
+  {jp:"あかい", id:"MERAH"},
+  {jp:"あおい", id:"BIRU"},
+  {jp:"すきな", id:"SUKA"},
+  {jp:"きらいな", id:"BENCI"},
+  {jp:"じょうずな", id:"PANDAI"},
+  {jp:"へたな", id:"BODOH"},
+  {jp:"ちかい", id:"DEKAT"},
+  {jp:"とおい", id:"JAUH"},
+  {jp:"はやい", id:"CEPAT"},
+  {jp:"おそい", id:"LAMBAT"},
+  {jp:"おおい", id:"BANYAK"},
+  {jp:"すくない", id:"SEDIKIT"},
+  {jp:"あたたかい", id:"HANGAT"},
+  {jp:"すずしい", id:"SEJUK"},
+  {jp:"ながい", id:"PANJANG"},
+  {jp:"みじかい", id:"PENDEK"},
+  {jp:"おもい", id:"BERAT"},
+  {jp:"かるい", id:"RINGAN"},
+  {jp:"あまい", id:"MANIS"},
+  {jp:"からい", id:"PEDAS"},
+  {jp:"ひまな", id:"SENGGANG"},
+  {jp:"いそがしい", id:"SIBUK"},
+  {jp:"わかい", id:"MUDA"},
+  {jp:"としうえの", id:"TUA"},
+  {jp:"たいせつな", id:"PENTING"},
+  {jp:"ほしい", id:"INGIN"},
+  {jp:"あかるい", id:"TERANG"},
+  {jp:"くらい", id:"GELAP"},
+  {jp:"ひろい", id:"LUAS"},
+  {jp:"せまい", id:"SEMPIT"},
+  {jp:"べんりな", id:"PRAKTIS"},
+  {jp:"ふべんな", id:"TIDAK PRAKTIS"},
+  {jp:"かんたんな", id:"SEDERHANA"},
+  {jp:"ふくざつな", id:"RUMIT"},
+  {jp:"せがたかい", id:"TINGGI (BADAN)"},
+  {jp:"せがひくい", id:"PENDEK (BADAN)"},
+  {jp:"あぶない", id:"BERBAHAYA"},
+  {jp:"うれしい", id:"SENANG"},
+  {jp:"かなしい", id:"SEDIH"},
+  {jp:"さびしい", id:"KESEPIAN"},
+  {jp:"ねむい", id:"MENGANTUK"},
+];
+
+// Note: no.22 たかい means MAHAL, no.20 TINGGI — both valid, quiz uses index
+// Tambah index unik buat no.20 dan 22
+const vocabIndexed = vocab.map((v,i) => ({...v, no: i+1}));
+
+// ── SEGMEN 1 ──
+function renderVocab(list) {
+  const g = document.getElementById('vocabGrid');
+  g.innerHTML = list.map(v => `
+    <div class="vocab-card">
+      <div class="vocab-no">${String(v.no).padStart(2,'0')}</div>
+      <div class="vocab-jp">${v.jp}</div>
+      <div class="vocab-id">${v.id}</div>
+    </div>`).join('');
+}
+renderVocab(vocabIndexed);
+
+function filterVocab() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  renderVocab(vocabIndexed.filter(v =>
+    v.jp.includes(q) || v.id.toLowerCase().includes(q)
+  ));
+}
+
+// ── SEGMEN 2 FLASHCARD ──
+let fcOrder = [...vocabIndexed];
+let fcIdx = 0;
+let fcFlipped = false;
+
+function renderFlash() {
+  const v = fcOrder[fcIdx];
+  document.getElementById('fcFront').textContent = v.jp;
+  document.getElementById('fcBack').textContent = v.id;
+  document.getElementById('fcCounter').textContent = `${fcIdx+1} / ${fcOrder.length}`;
+  document.getElementById('fcBar').style.width = `${((fcIdx+1)/fcOrder.length)*100}%`;
+  // reset flip
+  fcFlipped = false;
+  document.getElementById('fcInner').classList.remove('flipped');
+}
+
+function flipCard() {
+  fcFlipped = !fcFlipped;
+  document.getElementById('fcInner').classList.toggle('flipped', fcFlipped);
+}
+
+function nextCard() {
+  if (fcIdx < fcOrder.length-1) { fcIdx++; renderFlash(); }
+}
+function prevCard() {
+  if (fcIdx > 0) { fcIdx--; renderFlash(); }
+}
+function shuffleFlash() {
+  fcOrder = [...vocabIndexed].sort(() => Math.random()-0.5);
+  fcIdx = 0;
+  renderFlash();
+}
+renderFlash();
+
+// ── SEGMEN 3 QUIZ ──
+let qOrder = [];
+let qIdx = 0;
+let qCorrectCount = 0;
+let qWrongCount = 0;
+let qAnswered = false;
+
+function startQuiz() {
+  qOrder = [...vocabIndexed].sort(() => Math.random()-0.5);
+  qIdx = 0; qCorrectCount = 0; qWrongCount = 0;
+  document.getElementById('quizResult').classList.remove('show');
+  document.getElementById('quizCard').style.display = 'flex';
+  renderQuiz();
+}
+
+function renderQuiz() {
+  qAnswered = false;
+  const v = qOrder[qIdx];
+  document.getElementById('qPrompt').textContent = v.id;
+
+  // sub hint: kalau katakana kasih hint
+  const hasKatakana = /[\u30A0-\u30FF]/.test(v.jp);
+  document.getElementById('qSub').textContent = hasKatakana
+    ? 'Tulis dalam katakana'
+    : 'Tulis dalam hiragana';
+
+  const inp = document.getElementById('qInput');
+  inp.value = '';
+  inp.className = 'quiz-input';
+  inp.disabled = false;
+  inp.focus();
+
+  document.getElementById('qSubmit').disabled = false;
+  document.getElementById('qFeedback').className = 'quiz-feedback';
+  document.getElementById('qNext').className = 'quiz-next-btn';
+  document.getElementById('qCounter').textContent = `${qIdx+1} / ${qOrder.length}`;
+  document.getElementById('qBar').style.width = `${((qIdx)/qOrder.length)*100}%`;
+  updateScoreUI();
+}
+
+function updateScoreUI() {
+  document.getElementById('qCorrect').textContent = qCorrectCount;
+  document.getElementById('qWrong').textContent = qWrongCount;
+}
+
+function submitAnswer() {
+  if (qAnswered) return;
+  qAnswered = true;
+  const v = qOrder[qIdx];
+  const inp = document.getElementById('qInput');
+  const ans = inp.value.trim();
+  const correct = ans === v.jp;
+
+  inp.disabled = true;
+  if (correct) {
+    inp.classList.add('correct');
+    qCorrectCount++;
+    showFeedback(true, v.jp);
+  } else {
+    inp.classList.add('wrong');
+    qWrongCount++;
+    showFeedback(false, v.jp);
+  }
+  document.getElementById('qSubmit').disabled = true;
+  document.getElementById('qNext').className = 'quiz-next-btn show';
+  updateScoreUI();
+}
+
+function showFeedback(correct, answer) {
+  const fb = document.getElementById('qFeedback');
+  const ft = document.getElementById('qFeedbackText');
+  const fa = document.getElementById('qFeedbackAnswer');
+  fb.className = 'quiz-feedback show ' + (correct ? 'correct' : 'wrong');
+  ft.textContent = correct ? '✓ Benar!' : '✗ Jawaban yang benar:';
+  fa.textContent = correct ? '' : answer;
+}
+
+function nextQuiz() {
+  qIdx++;
+  if (qIdx >= qOrder.length) {
+    showResult();
+  } else {
+    renderQuiz();
+  }
+}
+
+function showResult() {
+  document.getElementById('quizCard').style.display = 'none';
+  document.getElementById('qFeedback').className = 'quiz-feedback';
+  document.getElementById('qNext').className = 'quiz-next-btn';
+  const pct = Math.round((qCorrectCount/qOrder.length)*100);
+  const res = document.getElementById('quizResult');
+  res.classList.add('show');
+  document.getElementById('rCorrect').textContent = qCorrectCount;
+  document.getElementById('rWrong').textContent = qWrongCount;
+  document.getElementById('rPct').textContent = pct+'%';
+  document.getElementById('resultEmoji').textContent = pct>=80?'🎉':pct>=50?'💪':'📖';
+  document.getElementById('resultTitle').textContent = pct>=80?'Keren banget!':pct>=50?'Lumayan, terus latihan!':'Yuk belajar lagi!';
+  document.getElementById('resultSub').textContent = `Skor kamu ${pct}% dari 70 kata sifat`;
+  document.getElementById('qBar').style.width = '100%';
+  updateScoreUI();
+}
+
+function restartQuiz() {
+  document.getElementById('quizCard').style.display = 'flex';
+  document.getElementById('quizResult').classList.remove('show');
+  startQuiz();
+}
+
+startQuiz();
+
+// ── PAGE SWITCH ──
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  const idx = {list:0,flash:1,quiz:2}[id];
+  document.querySelectorAll('.tab-btn')[idx].classList.add('active');
+}
+</script>
+</body>
+</html>
