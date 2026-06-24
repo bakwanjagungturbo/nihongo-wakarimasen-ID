@@ -6,7 +6,52 @@
 <title>にほんご — Belajar Bahasa Jepang</title>
 <!-- GOOGLE MATERIAL SYMBOLS (ROUNDED) -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+<!-- GOOGLE FONTS -->
+<link href="https://fonts.googleapis.com/css2?family=Peralta&family=Fontdiner+Swanky&display=swap" rel="stylesheet">
 <style>
+
+/* Hilangkan flash/overlay pada touchscreen */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+/* Efek glitter - class yang ditrigger oleh JS */
+.glitter-effect {
+  position: relative;
+  overflow: hidden;
+}
+.glitter-effect::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), 
+    rgba(124,106,247,0.6) 0%, 
+    rgba(124,106,247,0.2) 30%,
+    transparent 70%);
+  pointer-events: none;
+  animation: glitterBurst 0.6s cubic-bezier(0, 0, 0.2, 1) forwards;
+}
+
+@keyframes glitterBurst {
+  0% { 
+    opacity: 0; 
+    transform: scale(0.2) rotate(0deg);
+  }
+  20% { 
+    opacity: 1; 
+    transform: scale(1.2) rotate(5deg);
+  }
+  50% { 
+    opacity: 0.8; 
+    transform: scale(1.5) rotate(-3deg);
+  }
+  100% { 
+    opacity: 0; 
+    transform: scale(2) rotate(0deg);
+  }
+}
+
 /* ════════════════════════════════════════
    THEME VARIABLES
 ════════════════════════════════════════ */
@@ -55,6 +100,96 @@
   --tog-off:  #d0d0e4;
   --gradient-1: #e0e0ff;
   --gradient-2: #fae8ff;
+}
+
+/* ════════════════════════════════════════
+   CURSOR GLOW EFFECT - BULB LIGHT (SMOOTH)
+════════════════════════════════════════ */
+#cursor-glow {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  will-change: transform, opacity;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+#cursor-glow.active {
+  display: block;
+  opacity: 1;
+}
+
+/* Core - smooth gradient kayak bohlam */
+#cursor-glow .core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, 
+    rgba(124,106,247,0.5) 0%,
+    rgba(124,106,247,0.2) 20%,
+    rgba(124,106,247,0.08) 45%,
+    rgba(124,106,247,0.03) 65%,
+    transparent 85%
+  );
+  filter: blur(8px);
+}
+
+/* Inner glow - soft banget di pusat */
+#cursor-glow .inner-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40%;
+  height: 40%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%,
+    rgba(124,106,247,0.7) 0%,
+    rgba(124,106,247,0.3) 40%,
+    rgba(124,106,247,0.08) 70%,
+    transparent 100%
+  );
+  filter: blur(6px);
+}
+
+/* Trail particles - smooth dan lembut */
+.cursor-trail {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9998;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: radial-gradient(circle, 
+    rgba(124,106,247,0.15) 0%, 
+    transparent 100%
+  );
+  transform: translate(-50%, -50%);
+  animation: trailSmooth 0.7s cubic-bezier(0.2, 0.9, 0.3, 1.1) forwards;
+}
+
+@keyframes trailSmooth {
+  0% { 
+    opacity: 0.5; 
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  60% {
+    opacity: 0.2;
+    transform: translate(-50%, -50%) scale(1.8);
+  }
+  100% { 
+    opacity: 0; 
+    transform: translate(-50%, -50%) scale(0.2);
+  }
 }
 
 /* ════════════════════════════════════════
@@ -194,6 +329,31 @@ body.home-active {
 .hbg:hover{background:var(--bg3)}
 .hbg span{display:block;width:19px;height:2px;background:var(--text);border-radius:2px}
 #topbar-title{font-size:15px;font-weight:600;letter-spacing:-.2px}
+#topbar-actions {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-left:auto;
+}
+.topbar-btn {
+  padding:6px 10px;
+  border-radius:7px;
+  background:none;
+  border:1px solid var(--border2);
+  color:var(--muted);
+  font-size:14px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:all .15s;
+  height:36px;
+  width:36px;
+}
+.topbar-btn:hover {
+  border-color:var(--accent2);
+  color:var(--text);
+}
 
 /* ════════════════════════════════════════
    MAIN + CONTENT
@@ -210,36 +370,58 @@ body.home-active {
   justify-content: center;
   align-items: flex-start;
   min-height: calc(100vh - var(--th) - 60px);
-  padding: 10px 0;
+  padding: 20px 0 40px 5%;
+  max-width: 100%;
+  width: 100%;
   position: relative;
 }
 
 .home-typography {
   text-align: left;
-  line-height: 0.95;
-  letter-spacing: -3px;
-  font-weight: 800;
-  margin-bottom: 12px;
+  line-height: 0.9;
+  letter-spacing: -2px;
+  margin-bottom: 48px;
 }
 
 .home-line {
   display: block;
-  font-size: clamp(48px, 11vw, 92px);
+  font-size: clamp(58px, 13vw, 110px);
+  font-weight: 800;
 }
 
 .home-line.small-sub {
   display: inline-flex;
   align-items: flex-end;
-  gap: 16px;
+  gap: 14px;
+  font-weight: 800;
 }
 
-/* Kustomisasi Teks Pengganti Saya yang Diperbesar */
+/* Font khusus untuk "Saya" */
 .home-subtext {
-  font-size: clamp(18px, 4vw, 28px);
-  font-weight: 600;
+  font-family: 'Fontdiner Swanky', cursive;
+  font-size: clamp(28px, 5vw, 42px);
+  font-weight: 400;
   color: var(--accent2);
-  letter-spacing: -0.5px;
-  margin-bottom: 10px;
+  letter-spacing: 0px;
+  margin-top: 12px;
+  display: inline-block;
+}
+
+/* Font khusus untuk "YoNdakTau" */
+.home-line-yondaktau {
+  font-family: 'Peralta', cursive;
+  font-size: clamp(58px, 13vw, 110px);
+  font-weight: 400;
+  letter-spacing: 1px;
+  display: block;
+}
+
+/* Nihongo tetap default (font-weight 800) */
+.home-line-nihongo {
+  font-size: clamp(58px, 13vw, 110px);
+  font-weight: 800;
+  color: var(--accent2);
+  display: block;
 }
 
 /* Modifikasi Desain Kotak Rounded & Perubahan Warna Interaktif */
@@ -250,17 +432,23 @@ body.home-active {
   font-weight: 600;
   padding: 12px 24px;
   border-radius: 8px;
-  margin-top: 26px;
+  margin-top: 0;
+  margin-left: 0;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  transition: background-color 0.25s, color 0.25s, transform 0.15s;
+  transition: background-color 0.25s, color 0.25s, transform 0.15s, box-shadow 0.25s;
+  border: none;
+  cursor: pointer;
+  display: inline-block;
 }
 .home-btn-start:hover {
   background: var(--accent);
   color: #ffffff;
+  box-shadow: 0 0 20px rgba(124,106,247,0.5);
 }
 .home-btn-start:active {
   background: var(--accent2);
   transform: scale(0.96);
+  box-shadow: 0 0 30px rgba(124,106,247,0.7);
 }
 
 /* ════════════════════════════════════════
@@ -303,6 +491,64 @@ body.home-active {
 .vc-no{font-size:10px;color:var(--muted);margin-bottom:4px}
 .vc-jp{font-size:21px;margin-bottom:3px;letter-spacing:1px}
 .vc-id{font-size:11px;color:var(--accent2);font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.vc-actions{display:flex;justify-content:space-between;align-items:center;margin-top:2px}
+.vc-actions .speak-btn{background:none;border:none;cursor:pointer;font-size:18px;color:var(--muted);display:flex;align-items:center;justify-content:center;padding:2px}
+.vc-actions .speak-btn:hover{color:var(--accent2)}
+
+/* ════════════════════════════════════════
+   KANA GRID (HIRAGANA / KATAKANA)
+════════════════════════════════════════ */
+.kana-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.kana-grid.cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+.kana-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  padding: 14px 8px;
+  text-align: center;
+  transition: border-color .15s, transform .1s;
+  cursor: pointer;
+}
+.kana-card:hover {
+  border-color: var(--border2);
+  transform: translateY(-1px);
+}
+.kana-card .kana-char {
+  font-size: 32px;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 2px;
+}
+.kana-card .kana-reading {
+  font-size: 12px;
+  color: var(--muted);
+  display: block;
+}
+.kana-card .kana-type {
+  font-size: 9px;
+  color: var(--accent2);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  display: block;
+  margin-top: 2px;
+}
+.kana-section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent2);
+  margin: 16px 0 10px 0;
+  letter-spacing: -0.3px;
+}
+.kana-section-title:first-of-type {
+  margin-top: 0;
+}
 
 /* Flashcard */
 .fc-wrap{display:flex;flex-direction:column;align-items:center;gap:20px}
@@ -429,10 +675,26 @@ body.home-active {
   .vocab-grid{grid-template-columns:repeat(2,1fr)}
   .fc-main{font-size:34px}
   .home-typography { letter-spacing: -1.5px; }
+  .home-line { font-size: clamp(42px, 10vw, 70px); }
+  .home-line.small-sub { gap: 10px; flex-wrap: wrap; }
+  .home-subtext { font-size: clamp(18px, 4vw, 26px); }
+  .kana-grid { grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .kana-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .kana-card .kana-char { font-size: 24px; }
+}
+@media(max-width:400px){
+  .kana-grid { grid-template-columns: repeat(4, 1fr); }
+  .kana-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
 }
 </style>
 </head>
 <body>
+
+<!-- Cursor Glow Effect -->
+<div id="cursor-glow">
+  <div class="core"></div>
+  <div class="ring"></div>
+</div>
 
 <div id="overlay" onclick="closeSidebar()"></div>
 
@@ -466,16 +728,15 @@ body.home-active {
     </button>
     <span id="topbar-title">Home</span>
 
-    <!-- GANTI MENJADI INI -->
-    <div style="margin-left: auto;"></div>
-    
-    <!-- TOMBOL THEME (GOOGLE MATERIAL ICON) -->
-    <button onclick="toggleTheme()" id="theme-btn" style="padding:6px 10px; border-radius:7px; background:none; border:1px solid var(--border2); color:var(--muted); font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .15s" title="Ubah Tema">
-      <span id="theme-icon" class="material-symbols-rounded" style="font-size:20px;">dark_mode</span>
-    </button>
-    
-    <!-- TOMBOL FULLSCREEN -->
-    <button onclick="toggleFS()" id="fs-btn" style="padding:6px 10px; border-radius:7px; background:none; border:1px solid var(--border2); color:var(--muted); font-size:13px; cursor:pointer; transition:all .15s" title="Fullscreen">⛶</button>
+    <div id="topbar-actions">
+      <!-- TOMBOL THEME (GOOGLE MATERIAL ICON) -->
+      <button onclick="toggleTheme()" id="theme-btn" class="topbar-btn" title="Ubah Tema">
+        <span id="theme-icon" class="material-symbols-rounded" style="font-size:20px;">dark_mode</span>
+      </button>
+      
+      <!-- TOMBOL FULLSCREEN -->
+      <button onclick="toggleFS()" id="fs-btn" class="topbar-btn" title="Fullscreen" style="font-size:16px;font-weight:300;">⛶</button>
+    </div>
   </header>
   
   <main id="content">
@@ -510,7 +771,14 @@ const MENU = [
     ]
   },
   {
-    label: 'Kanji', id: 'kanji', icon: 'letter_switch', // Diganti ke letter_switch
+    label: 'Huruf Jepang', id: 'huruf', icon: 'letter_switch',
+    children: [
+      { label: 'Hiragana', page: 'hiragana' },
+      { label: 'Katakana', page: 'katakana' },
+    ]
+  },
+  {
+    label: 'Kanji', id: 'kanji', icon: 'font_download',
     children: [
       { label: 'Level N5', page: 'kanji-n5', soon: true },
       { label: 'Level N4', page: 'kanji-n4', soon: true },
@@ -590,7 +858,7 @@ function buildNav() {
           <span class="material-symbols-rounded icon">${sec.icon}</span>
           <span>${sec.label}</span>
         </div>
-        <span class="material-symbols-rounded" id="chev-${sec.id}">chevron_right</span>
+        <span class="material-symbols-rounded chevron" id="chev-${sec.id}">chevron_right</span>
       </button>
       <ul class="nav-children" id="sec-${sec.id}">
         ${sec.children.map(c => `
@@ -666,6 +934,310 @@ function toast(msg) {
 }
 
 /* ════════════════════════════════════════
+   SPEAK FUNCTION
+════════════════════════════════════════ */
+function speak(text) {
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ja-JP';
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+}
+
+/* ════════════════════════════════════════
+   CURSOR GLOW EFFECT (Smooth & Responsive)
+════════════════════════════════════════ */
+let cursorGlow = document.getElementById('cursor-glow');
+let glowTimeout = null;
+let trailParticles = [];
+let lastX = 0, lastY = 0;
+let isGlowActive = false;
+
+// Smooth cursor follow dengan lerp
+function lerp(a, b, t) {
+  return a + (b - a) * t;
+}
+
+let currentX = 0, currentY = 0;
+
+function isOnHomepage() {
+  return document.body.classList.contains('home-active');
+}
+
+function isOnHomepage() {
+  return document.body.classList.contains('home-active');
+}
+
+// Tambahkan fungsi baru untuk cek apakah di sidebar
+function isOnSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  return sidebar.classList.contains('open');
+}
+
+// Ganti fungsi updateCursorGlow
+function updateCursorGlow(e) {
+  const isHome = isOnHomepage();
+  const isSidebarOpen = isOnSidebar();
+  
+  if (!isHome && !isSidebarOpen) {
+    cursorGlow.classList.remove('active');
+    isGlowActive = false;
+    return;
+  }
+  
+  lastX = e.clientX;
+  lastY = e.clientY;
+  
+  if (!isGlowActive) {
+    currentX = lastX;
+    currentY = lastY;
+    cursorGlow.style.left = currentX + 'px';
+    cursorGlow.style.top = currentY + 'px';
+    cursorGlow.classList.add('active');
+    isGlowActive = true;
+  }
+  
+  if (Math.random() < 0.15) {
+    createTrailParticle(lastX, lastY);
+  }
+}
+
+// Ganti fungsi animateGlow
+function animateGlow() {
+  const isHome = isOnHomepage();
+  const isSidebarOpen = isOnSidebar();
+  
+  if (isGlowActive && (isHome || isSidebarOpen)) {
+    currentX = lerp(currentX, lastX, 0.08);
+    currentY = lerp(currentY, lastY, 0.08);
+    cursorGlow.style.left = currentX + 'px';
+    cursorGlow.style.top = currentY + 'px';
+  }
+  requestAnimationFrame(animateGlow);
+}
+
+// Tambahkan observer untuk sidebar
+const sidebarObserver = new MutationObserver(function() {
+  const isSidebarOpen = isOnSidebar();
+  if (!isSidebarOpen && !isOnHomepage()) {
+    cursorGlow.classList.remove('active');
+    isGlowActive = false;
+  } else if (isSidebarOpen) {
+    cursorGlow.classList.add('active');
+    isGlowActive = true;
+  }
+});
+
+// Observe sidebar class changes
+const sidebarElement = document.getElementById('sidebar');
+const observerConfig = { attributes: true, attributeFilter: ['class'] };
+sidebarObserver.observe(sidebarElement, observerConfig);
+
+function createTrailParticle(x, y) {
+  const trail = document.createElement('div');
+  trail.className = 'cursor-trail';
+  trail.style.left = x + 'px';
+  trail.style.top = y + 'px';
+  document.body.appendChild(trail);
+  
+  setTimeout(() => {
+    if (trail.parentNode) trail.remove();
+  }, 400);
+  
+  if (trailParticles.length > 20) {
+    const old = trailParticles.shift();
+    if (old.parentNode) old.remove();
+  }
+  trailParticles.push(trail);
+}
+
+// Mouse move dengan throttle
+let mouseMoveThrottle = false;
+document.addEventListener('mousemove', function(e) {
+  if (!mouseMoveThrottle) {
+    mouseMoveThrottle = true;
+    updateCursorGlow(e);
+    setTimeout(() => {
+      mouseMoveThrottle = false;
+    }, 16); // ~60fps
+  }
+});
+
+document.addEventListener('mouseleave', function() {
+  cursorGlow.classList.remove('active');
+  isGlowActive = false;
+});
+
+// Start animation loop
+animateGlow();
+
+// Navigate handler
+const origNavigate = App.navigate;
+App.navigate = function(id) {
+  origNavigate.call(this, id);
+  setTimeout(() => {
+    if (!isOnHomepage()) {
+      cursorGlow.classList.remove('active');
+      isGlowActive = false;
+    } else {
+      cursorGlow.classList.add('active');
+      isGlowActive = true;
+      // Set posisi ke tengah layar
+      currentX = window.innerWidth / 2;
+      currentY = window.innerHeight / 2;
+      lastX = currentX;
+      lastY = currentY;
+      cursorGlow.style.left = currentX + 'px';
+      cursorGlow.style.top = currentY + 'px';
+    }
+  }, 50);
+};
+
+// Home register
+const origHomeReg = App.register;
+App.register = function(id, fn) {
+  if (id === 'home') {
+    const wrappedFn = function(root) {
+      fn(root);
+      setTimeout(() => {
+        cursorGlow.classList.add('active');
+        isGlowActive = true;
+        currentX = window.innerWidth / 2;
+        currentY = window.innerHeight / 2;
+        lastX = currentX;
+        lastY = currentY;
+        cursorGlow.style.left = currentX + 'px';
+        cursorGlow.style.top = currentY + 'px';
+      }, 50);
+    };
+    origHomeReg.call(this, id, wrappedFn);
+  } else {
+    origHomeReg.call(this, id, fn);
+  }
+};
+
+// Cleanup trail
+setInterval(() => {
+  if (trailParticles.length > 30) {
+    const removed = trailParticles.splice(0, trailParticles.length - 20);
+    removed.forEach(p => {
+      if (p.parentNode) p.remove();
+    });
+  }
+}, 3000);
+
+/* ════════════════════════════════════════
+   GLITTER EFFECT - ONCE CLICK BURST!
+════════════════════════════════════════ */
+let glitterTimeout = null;
+
+function triggerGlitter(e) {
+  // Cegah double trigger dari click + touch
+  if (e.type === 'touchstart' && e.cancelable) {
+    // Biarkan touchstart jalan, tapi cegah click
+    return;
+  }
+  
+  const el = e.currentTarget;
+  
+  // Hapus class lama
+  el.classList.remove('glitter-effect');
+  
+  // Force reflow biar animasi restart
+  void el.offsetWidth;
+  
+  // Set posisi kursor/klik
+  const rect = el.getBoundingClientRect();
+  let clientX, clientY;
+  
+  if (e.type === 'touchstart' || e.type === 'touchend') {
+    const touch = e.changedTouches?.[0] || e.touches?.[0];
+    clientX = touch?.clientX || rect.width/2;
+    clientY = touch?.clientY || rect.height/2;
+  } else {
+    clientX = e.clientX || rect.width/2;
+    clientY = e.clientY || rect.height/2;
+  }
+  
+  const x = ((clientX - rect.left) / rect.width) * 100;
+  const y = ((clientY - rect.top) / rect.height) * 100;
+  
+  el.style.setProperty('--x', Math.min(100, Math.max(0, x)) + '%');
+  el.style.setProperty('--y', Math.min(100, Math.max(0, y)) + '%');
+  
+  // Tambah class untuk animasi
+  el.classList.add('glitter-effect');
+  
+  // Hapus class setelah animasi selesai (600ms)
+  clearTimeout(glitterTimeout);
+  glitterTimeout = setTimeout(() => {
+    el.classList.remove('glitter-effect');
+  }, 650);
+}
+
+// Pasang event listener dengan touch + click yang tidak bentrok
+document.addEventListener('DOMContentLoaded', function() {
+  const selectors = [
+    '.sb-nav button', '.hbg', '.vc-actions .speak-btn', 
+    '.fc-btn', '.home-btn-start', '.qz-btn', '.res-restart', 
+    '.kana-card', '.nav-section-btn', '.nav-child-btn'
+  ];
+  
+  function attachEvents(el) {
+    // Hanya pakai touchstart untuk touch, click untuk mouse
+    // Jangan double bind!
+    if ('ontouchstart' in window) {
+      el.addEventListener('touchstart', function(e) {
+        // Cegah double click
+        e.preventDefault();
+        triggerGlitter(e);
+      }, { passive: false });
+    } else {
+      el.addEventListener('click', triggerGlitter);
+    }
+  }
+  
+  document.querySelectorAll(selectors.join(',')).forEach(attachEvents);
+});
+
+// Mutation Observer untuk elemen baru
+const glitterObserver = new MutationObserver(function(mutations) {
+  const selectors = [
+    '.sb-nav button', '.hbg', '.vc-actions .speak-btn', 
+    '.fc-btn', '.home-btn-start', '.qz-btn', '.res-restart', 
+    '.kana-card', '.nav-section-btn', '.nav-child-btn'
+  ];
+  
+  mutations.forEach(function(mutation) {
+    mutation.addedNodes.forEach(function(node) {
+      if (node.nodeType === 1) {
+        if (node.matches && node.matches(selectors.join(','))) {
+          if ('ontouchstart' in window) {
+            node.addEventListener('touchstart', function(e) {
+              e.preventDefault();
+              triggerGlitter(e);
+            }, { passive: false });
+          } else {
+            node.addEventListener('click', triggerGlitter);
+          }
+        }
+        node.querySelectorAll && node.querySelectorAll(selectors.join(',')).forEach(el => {
+          if ('ontouchstart' in window) {
+            el.addEventListener('touchstart', function(e) {
+              e.preventDefault();
+              triggerGlitter(e);
+            }, { passive: false });
+          } else {
+            el.addEventListener('click', triggerGlitter);
+          }
+        });
+      }
+    });
+  });
+});
+
+glitterObserver.observe(document.body, { childList: true, subtree: true });
+
+/* ════════════════════════════════════════
    INIT & AUTO LOAD
 ════════════════════════════════════════ */
 function init() {
@@ -693,9 +1265,9 @@ App.register('home', function(root) {
   root.innerHTML = `
     <div class="home-container">
       <div class="home-typography">
-        <span class="home-line small-sub">Watashi <span class="home-subtext">Saya</span></span>
-        <span class="home-line" style="color: var(--accent2)">Nihongo</span>
-        <span class="home-line">YoNdakTau</span>
+        <div class="home-line small-sub">Watashi <span class="home-subtext">Saya</span></div>
+        <div class="home-line-nihongo">Nihongo</div>
+        <div class="home-line-yondaktau">YoNdakTau</div>
       </div>
       <button class="home-btn-start" onclick="openSidebar()">Mulai Belajar</button>
     </div>
@@ -825,9 +1397,9 @@ function ks_daftar() {
     <div class="vc">
       <div class="vc-no">${String(v.no).padStart(2,'0')}</div>
       <div class="vc-jp">${v.jp}</div>
-      <div style="display:flex;justify-content:space-between;align-items:center">
+      <div class="vc-actions">
         <div class="vc-id">${v.id}</div>
-        <button onclick="speak('${v.jp}')" style="background:none;border:none;cursor:pointer;font-size:18px;color:var(--muted);display:flex;align-items:center;justify-content:center" title="Dengar">
+        <button class="speak-btn" onclick="speak('${v.jp}')" title="Dengar">
           <span class="material-symbols-rounded" style="font-size:20px;">volume_up</span>
         </button>
       </div>
@@ -844,7 +1416,12 @@ window.ks_filter = function(q) {
     <div class="vc">
       <div class="vc-no">${String(v.no).padStart(2,'0')}</div>
       <div class="vc-jp">${v.jp}</div>
-      <div class="vc-id">${v.id}</div>
+      <div class="vc-actions">
+        <div class="vc-id">${v.id}</div>
+        <button class="speak-btn" onclick="speak('${v.jp}')" title="Dengar">
+          <span class="material-symbols-rounded" style="font-size:20px;">volume_up</span>
+        </button>
+      </div>
     </div>`).join('');
 };
 
@@ -1017,12 +1594,329 @@ window.ks_qzRestart=function(){
 
 })();
 
-function speak(text) {
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'ja-JP';
-  speechSynthesis.cancel();
-  speechSynthesis.speak(u);
+/* ════════════════════════════════════════════════════════════════
+   PAGE MODULE: HIRAGANA & KATAKANA
+════════════════════════════════════════════════════════════════ */
+;(function() {
+
+// Data Hiragana
+const HIRAGANA_DATA = {
+  basic: [
+    ['あ','a'], ['い','i'], ['う','u'], ['え','e'], ['お','o'],
+    ['か','ka'], ['き','ki'], ['く','ku'], ['け','ke'], ['こ','ko'],
+    ['さ','sa'], ['し','shi'], ['す','su'], ['せ','se'], ['そ','so'],
+    ['た','ta'], ['ち','chi'], ['つ','tsu'], ['て','te'], ['と','to'],
+    ['な','na'], ['に','ni'], ['ぬ','nu'], ['ね','ne'], ['の','no'],
+    ['は','ha'], ['ひ','hi'], ['ふ','fu'], ['へ','he'], ['ほ','ho'],
+    ['ま','ma'], ['み','mi'], ['む','mu'], ['め','me'], ['も','mo'],
+    ['や','ya'], ['',''], ['ゆ','yu'], ['',''], ['よ','yo'],
+    ['ら','ra'], ['り','ri'], ['る','ru'], ['れ','re'], ['ろ','ro'],
+    ['わ','wa'], ['',''], ['',''], ['',''], ['を','wo'],
+    ['ん','n'], ['',''], ['',''], ['',''], ['','']
+  ],
+  tenten: [
+    ['が','ga'], ['ぎ','gi'], ['ぐ','gu'], ['げ','ge'], ['ご','go'],
+    ['ざ','za'], ['じ','ji'], ['ず','zu'], ['ぜ','ze'], ['ぞ','zo'],
+    ['だ','da'], ['ぢ','ji'], ['づ','zu'], ['で','de'], ['ど','do'],
+    ['ば','ba'], ['び','bi'], ['ぶ','bu'], ['べ','be'], ['ぼ','bo']
+  ],
+  maru: [
+    ['ぱ','pa'], ['ぴ','pi'], ['ぷ','pu'], ['ぺ','pe'], ['ぽ','po']
+  ],
+  youon: [
+    ['きゃ','kya'], ['きゅ','kyu'], ['きょ','kyo'],
+    ['しゃ','sha'], ['しゅ','shu'], ['しょ','sho'],
+    ['ちゃ','cha'], ['ちゅ','chu'], ['ちょ','cho'],
+    ['にゃ','nya'], ['にゅ','nyu'], ['にょ','nyo'],
+    ['ひゃ','hya'], ['ひゅ','hyu'], ['ひょ','hyo'],
+    ['みゃ','mya'], ['みゅ','myu'], ['みょ','myo'],
+    ['りゃ','rya'], ['りゅ','ryu'], ['りょ','ryo'],
+    ['ぎゃ','gya'], ['ぎゅ','gyu'], ['ぎょ','gyo'],
+    ['じゃ','ja'], ['じゅ','ju'], ['じょ','jo'],
+    ['びゃ','bya'], ['びゅ','byu'], ['びょ','byo'],
+    ['ぴゃ','pya'], ['ぴゅ','pyu'], ['ぴょ','pyo']
+  ]
+};
+
+// Data Katakana
+const KATAKANA_DATA = {
+  basic: [
+    ['ア','a'], ['イ','i'], ['ウ','u'], ['エ','e'], ['オ','o'],
+    ['カ','ka'], ['キ','ki'], ['ク','ku'], ['ケ','ke'], ['コ','ko'],
+    ['サ','sa'], ['シ','shi'], ['ス','su'], ['セ','se'], ['ソ','so'],
+    ['タ','ta'], ['チ','chi'], ['ツ','tsu'], ['テ','te'], ['ト','to'],
+    ['ナ','na'], ['ニ','ni'], ['ヌ','nu'], ['ネ','ne'], ['ノ','no'],
+    ['ハ','ha'], ['ヒ','hi'], ['フ','fu'], ['ヘ','he'], ['ホ','ho'],
+    ['マ','ma'], ['ミ','mi'], ['ム','mu'], ['メ','me'], ['モ','mo'],
+    ['ヤ','ya'], ['',''], ['ユ','yu'], ['',''], ['ヨ','yo'],
+    ['ラ','ra'], ['リ','ri'], ['ル','ru'], ['レ','re'], ['ロ','ro'],
+    ['ワ','wa'], ['',''], ['',''], ['',''], ['ヲ','wo'],
+    ['ン','n'], ['',''], ['',''], ['',''], ['','']
+  ],
+  tenten: [
+    ['ガ','ga'], ['ギ','gi'], ['グ','gu'], ['ゲ','ge'], ['ゴ','go'],
+    ['ザ','za'], ['ジ','ji'], ['ズ','zu'], ['ゼ','ze'], ['ゾ','zo'],
+    ['ダ','da'], ['ヂ','ji'], ['ヅ','zu'], ['デ','de'], ['ド','do'],
+    ['バ','ba'], ['ビ','bi'], ['ブ','bu'], ['ベ','be'], ['ボ','bo']
+  ],
+  maru: [
+    ['パ','pa'], ['ピ','pi'], ['プ','pu'], ['ペ','pe'], ['ポ','po']
+  ],
+  youon: [
+    ['キャ','kya'], ['キュ','kyu'], ['キョ','kyo'],
+    ['シャ','sha'], ['シュ','shu'], ['ショ','sho'],
+    ['チャ','cha'], ['チュ','chu'], ['チョ','cho'],
+    ['ニャ','nya'], ['ニュ','nyu'], ['ニョ','nyo'],
+    ['ヒャ','hya'], ['ヒュ','hyu'], ['ヒョ','hyo'],
+    ['ミャ','mya'], ['ミュ','myu'], ['ミョ','myo'],
+    ['リャ','rya'], ['リュ','ryu'], ['リョ','ryo'],
+    ['ギャ','gya'], ['ギュ','gyu'], ['ギョ','gyo'],
+    ['ジャ','ja'], ['ジュ','ju'], ['ジョ','jo'],
+    ['ビャ','bya'], ['ビュ','byu'], ['ビョ','byo'],
+    ['ピャ','pya'], ['ピュ','pyu'], ['ピョ','pyo']
+  ]
+};
+
+function renderKanaPage(root, type, data) {
+  const label = type === 'hiragana' ? 'Hiragana' : 'Katakana';
+  root.innerHTML = `
+    <div class="ph">
+      <h2>${label} — ひらがな</h2>
+      <p>${type === 'hiragana' ? 'Huruf dasar Jepang' : 'Huruf untuk kata serapan'}</p>
+    </div>
+    <div class="seg-tabs" id="kana-tabs-${type}">
+      <button class="seg-tab on" data-section="basic">Dasar</button>
+      <button class="seg-tab" data-section="tenten">Tenten</button>
+      <button class="seg-tab" data-section="maru">Maru</button>
+      <button class="seg-tab" data-section="youon">Youon</button>
+      <button class="seg-tab" data-section="quiz">Kuis</button>
+    </div>
+    <div id="kana-body-${type}"></div>
+  `;
+  
+  const tabs = document.querySelectorAll(`#kana-tabs-${type} .seg-tab`);
+  tabs.forEach(tab => {
+    tab.addEventListener('click', function() {
+      tabs.forEach(t => t.classList.remove('on'));
+      this.classList.add('on');
+      renderKanaSection(type, data, this.dataset.section);
+    });
+  });
+  
+  renderKanaSection(type, data, 'basic');
 }
+
+function renderKanaSection(type, data, section) {
+  const container = document.getElementById(`kana-body-${type}`);
+  if (!container) return;
+  
+  if (section === 'quiz') {
+    renderKanaQuiz(type, data, container);
+    return;
+  }
+  
+  let items = [];
+  let label = '';
+  let isYouon = false;
+  
+  if (section === 'basic') {
+    items = data.basic;
+    label = 'Dasar';
+  } else if (section === 'tenten') {
+    items = data.tenten;
+    label = 'Tenten (〃)';
+  } else if (section === 'maru') {
+    items = data.maru;
+    label = 'Maru (゜)';
+  } else if (section === 'youon') {
+    items = data.youon;
+    label = 'Youon (pasangan kecil)';
+    isYouon = true;
+  }
+  
+  let html = `<div class="kana-section-title">${label}</div>`;
+  html += `<div class="kana-grid ${isYouon ? 'cols-3' : ''}">`;
+  
+  items.forEach(([char, reading]) => {
+    if (char === '' && reading === '') {
+      html += `<div class="kana-card" style="visibility:hidden;border-color:transparent;background:transparent;cursor:default;"></div>`;
+    } else {
+      html += `
+        <div class="kana-card" onclick="speak('${char}')">
+          <span class="kana-char">${char}</span>
+          <span class="kana-reading">${reading}</span>
+        </div>
+      `;
+    }
+  });
+  
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+function renderKanaQuiz(type, data, container) {
+  // Gabungkan semua data untuk kuis
+  const allItems = [...data.basic, ...data.tenten, ...data.maru, ...data.youon];
+  
+  container.innerHTML = `
+    <div class="qz-wrap">
+      <div class="qz-score">
+        <div class="pill pc">✓ <span id="kqz-ok-${type}">0</span></div>
+        <div class="pill pw">✗ <span id="kqz-ng-${type}">0</span></div>
+        <span class="fc-ctr" id="kqz-ctr-${type}">0 / ${allItems.length}</span>
+      </div>
+      <div class="pbar-wrap" style="max-width:500px"><div class="pbar" id="kqz-bar-${type}" style="width:0%"></div></div>
+      <div class="qz-card" id="kqz-card-${type}">
+        <div class="qz-lbl">Apa huruf ini?</div>
+        <div class="qz-prompt" id="kqz-prompt-${type}" style="font-size:48px;"></div>
+        <div class="qz-sub" id="kqz-sub-${type}">Tulis dalam romaji</div>
+        <input class="qz-input" id="kqz-input-${type}" placeholder="tulis romaji..."
+          autocomplete="off" onkeydown="if(event.key==='Enter')kanaQuizCheck('${type}')">
+        <button class="qz-btn" id="kqz-submit-${type}" onclick="kanaQuizCheck('${type}')">Cek Jawaban</button>
+      </div>
+      <div class="qz-fb" id="kqz-fb-${type}">
+        <div id="kqz-fb-txt-${type}"></div>
+        <div class="qz-fb-ans" id="kqz-fb-ans-${type}"></div>
+      </div>
+      <button class="qz-next" id="kqz-next-${type}" onclick="kanaQuizNext('${type}')" onkeydown="event.preventDefault()">Soal berikutnya →</button>
+      <div class="qz-result" id="kqz-result-${type}">
+        <div class="res-emoji" id="kres-emoji-${type}">🎉</div>
+        <div class="res-title" id="kres-title-${type}"></div>
+        <div class="res-sub" id="kres-sub-${type}"></div>
+        <div class="res-stats">
+          <div class="res-stat"><div class="res-n" style="color:var(--green)" id="kres-ok-${type}">0</div><div class="res-l">Benar</div></div>
+          <div class="res-stat"><div class="res-n" style="color:var(--red)" id="kres-ng-${type}">0</div><div class="res-l">Salah</div></div>
+          <div class="res-stat"><div class="res-n" style="color:var(--yellow)" id="kres-pct-${type}">0%</div><div class="res-l">Skor</div></div>
+        </div>
+        <button class="res-restart" onclick="kanaQuizRestart('${type}')">Ulangi Quiz</button>
+      </div>
+    </div>
+  `;
+  
+  // State untuk kuis
+  window[`_kana_${type}`] = {
+    items: [...allItems].sort(() => Math.random() - 0.5),
+    idx: 0,
+    ok: 0,
+    ng: 0
+  };
+  
+  kanaQuizRender(type);
+}
+
+window.kanaQuizRender = function(type) {
+  const state = window[`_kana_${type}`];
+  if (!state || state.idx >= state.items.length) {
+    kanaQuizResult(type);
+    return;
+  }
+  
+  const [char, reading] = state.items[state.idx];
+  document.getElementById(`kqz-prompt-${type}`).textContent = char;
+  document.getElementById(`kqz-sub-${type}`).textContent = 'Tulis dalam romaji';
+  const inp = document.getElementById(`kqz-input-${type}`);
+  inp.value = '';
+  inp.className = 'qz-input';
+  inp.disabled = false;
+  inp.focus();
+  document.getElementById(`kqz-submit-${type}`).disabled = false;
+  document.getElementById(`kqz-fb-${type}`).className = 'qz-fb';
+  document.getElementById(`kqz-next-${type}`).className = 'qz-next';
+  document.getElementById(`kqz-ctr-${type}`).textContent = `${state.idx+1} / ${state.items.length}`;
+  document.getElementById(`kqz-bar-${type}`).style.width = `${(state.idx/state.items.length)*100}%`;
+  updateKanaScore(type);
+};
+
+window.kanaQuizCheck = function(type) {
+  const state = window[`_kana_${type}`];
+  if (!state || state.idx >= state.items.length) return;
+  
+  const [char, correct] = state.items[state.idx];
+  const inp = document.getElementById(`kqz-input-${type}`);
+  const ans = inp.value.trim().toLowerCase();
+  const ok = ans === correct.toLowerCase();
+  
+  inp.disabled = true;
+  inp.classList.add(ok ? 'ok' : 'no');
+  if (ok) state.ok++;
+  else state.ng++;
+  document.getElementById(`kqz-submit-${type}`).disabled = true;
+  
+  const fb = document.getElementById(`kqz-fb-${type}`);
+  fb.className = 'qz-fb show ' + (ok ? 'ok' : 'no');
+  document.getElementById(`kqz-fb-txt-${type}`).textContent = ok ? '✓ Benar!' : '✗ Jawaban yang benar:';
+  document.getElementById(`kqz-fb-ans-${type}`).textContent = ok ? '' : correct;
+  document.getElementById(`kqz-next-${type}`).className = 'qz-next show';
+  updateKanaScore(type);
+};
+
+window.kanaQuizNext = function(type) {
+  const state = window[`_kana_${type}`];
+  if (!state) return;
+  document.getElementById(`kqz-next-${type}`).blur();
+  state.idx++;
+  if (state.idx >= state.items.length) {
+    kanaQuizResult(type);
+  } else {
+    kanaQuizRender(type);
+  }
+};
+
+function updateKanaScore(type) {
+  const state = window[`_kana_${type}`];
+  if (!state) return;
+  document.getElementById(`kqz-ok-${type}`).textContent = state.ok;
+  document.getElementById(`kqz-ng-${type}`).textContent = state.ng;
+}
+
+function kanaQuizResult(type) {
+  const state = window[`_kana_${type}`];
+  if (!state) return;
+  
+  document.getElementById(`kqz-card-${type}`).style.display = 'none';
+  document.getElementById(`kqz-fb-${type}`).className = 'qz-fb';
+  document.getElementById(`kqz-next-${type}`).className = 'qz-next';
+  
+  const total = state.items.length;
+  const pct = Math.round((state.ok / total) * 100);
+  const r = document.getElementById(`kqz-result-${type}`);
+  r.classList.add('show');
+  document.getElementById(`kres-ok-${type}`).textContent = state.ok;
+  document.getElementById(`kres-ng-${type}`).textContent = state.ng;
+  document.getElementById(`kres-pct-${type}`).textContent = pct + '%';
+  document.getElementById(`kres-emoji-${type}`).textContent = pct >= 80 ? '🎉' : pct >= 50 ? '💪' : '📖';
+  document.getElementById(`kres-title-${type}`).textContent = pct >= 80 ? 'Keren banget!' : pct >= 50 ? 'Terus semangat!' : 'Yuk belajar lagi!';
+  document.getElementById(`kres-sub-${type}`).textContent = `Skor kamu ${pct}% dari ${total} soal`;
+  document.getElementById(`kqz-bar-${type}`).style.width = '100%';
+}
+
+window.kanaQuizRestart = function(type) {
+  const allItems = [...HIRAGANA_DATA.basic, ...HIRAGANA_DATA.tenten, ...HIRAGANA_DATA.maru, ...HIRAGANA_DATA.youon];
+  if (type === 'katakana') {
+    allItems.length = 0;
+    allItems.push(...KATAKANA_DATA.basic, ...KATAKANA_DATA.tenten, ...KATAKANA_DATA.maru, ...KATAKANA_DATA.youon);
+  }
+  document.getElementById(`kqz-card-${type}`).style.display = 'flex';
+  document.getElementById(`kqz-result-${type}`).classList.remove('show');
+  window[`_kana_${type}`] = {
+    items: [...allItems].sort(() => Math.random() - 0.5),
+    idx: 0,
+    ok: 0,
+    ng: 0
+  };
+  kanaQuizRender(type);
+};
+
+// Register pages
+App.register('hiragana', function(root) {
+  renderKanaPage(root, 'hiragana', HIRAGANA_DATA);
+});
+
+App.register('katakana', function(root) {
+  renderKanaPage(root, 'katakana', KATAKANA_DATA);
+});
+
+})();
 </script>
 </body>
 </html>
