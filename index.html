@@ -260,6 +260,7 @@ input:checked+.tog-track::before{transform:translateX(17px)}
 }
 .fc-btn:hover{border-color:var(--accent);color:var(--accent2)}
 .fc-btn.p{background:var(--acbg);border-color:var(--accent);color:var(--accent2)}
+.fc-btn:disabled{opacity:0.4;cursor:not-allowed;pointer-events:none}
 
 /* Quiz */
 .qz-wrap{display:flex;flex-direction:column;align-items:center;gap:16px}
@@ -738,7 +739,7 @@ function ks_fcHTML() {
     <div class="fc-btns">
       <button class="fc-btn" onclick="ks_fcPrev()">← Prev</button>
       <button class="fc-btn" id="fc-speak-btn" onclick="ks_speak()" title="Dengar">🔊</button>
-      <button class="fc-btn p" onclick="ks_fcNext()">Next →</button>
+      <button class="fc-btn" onclick="ks_fcNext()">Next →</button>
     </div>
   </div>`;
 }
@@ -751,11 +752,18 @@ function ks_fcRender() {
   document.getElementById('fc-bar').style.width   = `${((fcIdx+1)/fcOrder.length)*100}%`;
   fcFlipped = false;
   document.getElementById('fc-inner').classList.remove('flipped');
+  
+  // TAMBAHIN INI buat disable tombol
+  const btns = document.querySelectorAll('.fc-btns .fc-btn');
+  if (btns.length >= 2) {
+    btns[0].disabled = fcIdx === 0; // Prev
+    btns[2].disabled = fcIdx === fcOrder.length - 1; // Next
+  }
 }
 window.ks_flip    = () => { fcFlipped=!fcFlipped; document.getElementById('fc-inner').classList.toggle('flipped',fcFlipped); };
 window.ks_speak = function() { speak(fcOrder[fcIdx].jp); };
-window.ks_fcNext  = () => { if(fcIdx<fcOrder.length-1){fcIdx++;ks_fcRender();} };
-window.ks_fcPrev  = () => { if(fcIdx>0){fcIdx--;ks_fcRender();} };
+window.ks_fcNext  = () => { document.activeElement?.blur(); if(fcIdx<fcOrder.length-1){fcIdx++;ks_fcRender();} };
+window.ks_fcPrev  = () => { document.activeElement?.blur(); if(fcIdx>0){fcIdx--;ks_fcRender();} };
 window.ks_shuffle = () => { fcOrder=[...DATA].sort(()=>Math.random()-.5);fcIdx=0;ks_fcRender(); };
 
 /* ── QUIZ ── */
@@ -773,7 +781,7 @@ function ks_qzHTML() {
       <div class="qz-prompt" id="qz-prompt"></div>
       <div class="qz-sub" id="qz-sub"></div>
       <input class="qz-input" id="qz-input" placeholder="tulis di sini..."
-        onkeydown="if(event.key==='Enter'){event.preventDefault();ks_check();}"
+        autocomplete="off" onkeydown="if(event.key==='Enter')ks_check()">
       <button class="qz-btn" id="qz-submit" onclick="ks_check()">Cek Jawaban</button>
     </div>
     <div class="qz-fb" id="qz-fb">
