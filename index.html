@@ -737,7 +737,7 @@ function ks_fcHTML() {
     </div>
     <div class="fc-btns">
       <button class="fc-btn" onclick="ks_fcPrev()">← Prev</button>
-      <button class="fc-btn" onclick="speak(fcOrder[fcIdx].jp)" title="Dengar">🔊</button>
+      <button class="fc-btn" id="fc-speak-btn" onclick="ks_speak()" title="Dengar">🔊</button>
       <button class="fc-btn p" onclick="ks_fcNext()">Next →</button>
     </div>
   </div>`;
@@ -753,6 +753,7 @@ function ks_fcRender() {
   document.getElementById('fc-inner').classList.remove('flipped');
 }
 window.ks_flip    = () => { fcFlipped=!fcFlipped; document.getElementById('fc-inner').classList.toggle('flipped',fcFlipped); };
+window.ks_speak = function() { speak(fcOrder[fcIdx].jp); };
 window.ks_fcNext  = () => { if(fcIdx<fcOrder.length-1){fcIdx++;ks_fcRender();} };
 window.ks_fcPrev  = () => { if(fcIdx>0){fcIdx--;ks_fcRender();} };
 window.ks_shuffle = () => { fcOrder=[...DATA].sort(()=>Math.random()-.5);fcIdx=0;ks_fcRender(); };
@@ -828,6 +829,7 @@ window.ks_check = function() {
   ks_scoreUI();
 };
 window.ks_qzNext = function() {
+  document.getElementById('qz-next').blur();
   qIdx++;
   if(qIdx>=qOrder.length) ks_result();
   else ks_qzRender();
