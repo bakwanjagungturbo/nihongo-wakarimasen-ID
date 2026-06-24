@@ -693,7 +693,10 @@ function ks_daftar() {
     <div class="vc">
       <div class="vc-no">${String(v.no).padStart(2,'0')}</div>
       <div class="vc-jp">${v.jp}</div>
-      <div class="vc-id">${v.id}</div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div class="vc-id">${v.id}</div>
+        <button onclick="speak('${v.jp}')" style="background:none;border:none;cursor:pointer;font-size:15px;color:var(--muted)" title="Dengar">🔊</button>
+      </div>
     </div>`).join('');
   return `
     <input class="search" placeholder="Cari kata atau arti..." oninput="ks_filter(this.value)">
@@ -734,6 +737,7 @@ function ks_fcHTML() {
     </div>
     <div class="fc-btns">
       <button class="fc-btn" onclick="ks_fcPrev()">← Prev</button>
+      <button class="fc-btn" onclick="speak(fcOrder[fcIdx].jp)" title="Dengar">🔊</button>
       <button class="fc-btn p" onclick="ks_fcNext()">Next →</button>
     </div>
   </div>`;
@@ -861,6 +865,12 @@ window.addEventListener('load', () => App.navigate('kata-sifat'));
    Untuk halaman baru, copy blok di atas, ganti PAGE_ID, PAGE_TITLE, DATA
    dan prefix fungsi (ks_ → kb_ untuk kata benda, dst)
 ════════════════════════════════════════════════════════════════ */
+function speak(text) {
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ja-JP';
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+}
 </script>
 </body>
 </html>
