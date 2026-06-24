@@ -380,6 +380,7 @@ input:checked+.tog-track::before{transform:translateX(17px)}
       <span></span><span></span><span></span>
     </button>
     <span id="topbar-title">にほんご</span>
+    <button onclick="toggleFS()" id="fs-btn" style="margin-left:auto;padding:6px 10px;border-radius:7px;background:none;border:1px solid var(--border2);color:var(--muted);font-size:13px;cursor:pointer;transition:all .15s" title="Fullscreen">⛶</button>
   </header>
   <main id="content"><p style="color:var(--muted);text-align:center;margin-top:60px">Memuat...</p></main>
 </div>
@@ -387,6 +388,15 @@ input:checked+.tog-track::before{transform:translateX(17px)}
 <div id="toast"></div>
 
 <script>
+  function toggleFS() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen();
+    document.getElementById('fs-btn').textContent = '✕';
+  } else {
+    document.exitFullscreen();
+    document.getElementById('fs-btn').textContent = '⛶';
+  }
+}
 /* ════════════════════════════════════════
    MENU CONFIG
    ↓ EDIT DI SINI UNTUK TAMBAH MENU BARU ↓
