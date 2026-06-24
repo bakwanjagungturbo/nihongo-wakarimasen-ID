@@ -1,673 +1,856 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>K. Sifat Bahasa Jepang</title>
+<title>にほんご — Belajar Bahasa Jepang</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+/* ════════════════════════════════════════
+   THEME VARIABLES
+════════════════════════════════════════ */
+:root { --sw: 268px; --th: 54px; }
 
-  :root {
-    --bg: #0f0f14;
-    --bg2: #16161e;
-    --bg3: #1e1e2a;
-    --border: rgba(255,255,255,0.08);
-    --border2: rgba(255,255,255,0.14);
-    --text: #e8e6f0;
-    --muted: #8a87a0;
-    --accent: #7c6af7;
-    --accent2: #a594ff;
-    --accent-glow: rgba(124,106,247,0.18);
-    --green: #4ade9a;
-    --green-bg: rgba(74,222,154,0.1);
-    --red: #f87171;
-    --red-bg: rgba(248,113,113,0.1);
-    --yellow: #fbbf24;
-  }
+[data-theme="dark"] {
+  --bg:       #0f0f14;
+  --bg2:      #17171f;
+  --bg3:      #1e1e2a;
+  --bg4:      #252535;
+  --border:   rgba(255,255,255,0.07);
+  --border2:  rgba(255,255,255,0.13);
+  --text:     #e8e6f0;
+  --muted:    #6e6c82;
+  --accent:   #7c6af7;
+  --accent2:  #a594ff;
+  --acbg:     rgba(124,106,247,0.14);
+  --sbg:      #111118;
+  --tbg:      #111118;
+  --overlay:  rgba(0,0,0,0.6);
+  --green:    #4ade9a; --gbg: rgba(74,222,154,0.1);
+  --red:      #f87171; --rbg: rgba(248,113,113,0.1);
+  --yellow:   #fbbf24;
+  --tog-off:  #2a2a3a;
+}
+[data-theme="light"] {
+  --bg:       #f0f0f7;
+  --bg2:      #ffffff;
+  --bg3:      #e8e8f2;
+  --bg4:      #ddddf0;
+  --border:   rgba(0,0,0,0.07);
+  --border2:  rgba(0,0,0,0.13);
+  --text:     #1a1830;
+  --muted:    #9090b0;
+  --accent:   #5a48d4;
+  --accent2:  #5a48d4;
+  --acbg:     rgba(90,72,212,0.1);
+  --sbg:      #ffffff;
+  --tbg:      #ffffff;
+  --overlay:  rgba(0,0,0,0.3);
+  --green:    #16a34a; --gbg: rgba(22,163,74,0.08);
+  --red:      #dc2626; --rbg: rgba(220,38,38,0.08);
+  --yellow:   #b45309;
+  --tog-off:  #d0d0e4;
+}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
+/* ════════════════════════════════════════
+   RESET
+════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .2s,color .2s}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+ul{list-style:none}
+input{font-family:inherit}
 
-  /* NAV */
-  nav {
-    display: flex;
-    gap: 4px;
-    padding: 16px 24px;
-    border-bottom: 1px solid var(--border);
-    background: var(--bg2);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  .nav-logo {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--accent2);
-    letter-spacing: -0.5px;
-    margin-right: auto;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .nav-logo span { font-size: 22px; }
-  .tab-btn {
-    padding: 7px 16px;
-    border-radius: 8px;
-    border: 1px solid transparent;
-    background: transparent;
-    color: var(--muted);
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 500;
-    transition: all 0.15s;
-  }
-  .tab-btn:hover { background: var(--bg3); color: var(--text); }
-  .tab-btn.active {
-    background: var(--accent-glow);
-    border-color: var(--accent);
-    color: var(--accent2);
-  }
+/* ════════════════════════════════════════
+   OVERLAY
+════════════════════════════════════════ */
+#overlay{
+  display:none;position:fixed;inset:0;
+  background:var(--overlay);z-index:200;
+  backdrop-filter:blur(3px);
+}
+#overlay.show{display:block}
 
-  /* PAGES */
-  .page { display: none; padding: 32px 24px; max-width: 960px; margin: 0 auto; width: 100%; }
-  .page.active { display: block; }
+/* ════════════════════════════════════════
+   SIDEBAR
+════════════════════════════════════════ */
+#sidebar{
+  position:fixed;top:0;left:0;
+  width:var(--sw);height:100vh;
+  background:var(--sbg);
+  border-right:1px solid var(--border);
+  z-index:300;
+  display:flex;flex-direction:column;
+  transform:translateX(-100%);
+  transition:transform .28s cubic-bezier(.4,0,.2,1);
+}
+#sidebar.open{transform:translateX(0)}
 
-  /* ── SEGMEN 1: DAFTAR ── */
-  .page-header { margin-bottom: 24px; }
-  .page-header h1 { font-size: 26px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
-  .page-header p { color: var(--muted); margin-top: 4px; font-size: 14px; }
+.sb-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 14px 14px;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.sb-logo{font-size:15px;font-weight:700;color:var(--accent2);letter-spacing:-.3px}
+.sb-close{
+  color:var(--muted);font-size:14px;
+  padding:5px 9px;border-radius:7px;
+  transition:background .15s,color .15s;
+}
+.sb-close:hover{background:var(--bg3);color:var(--text)}
 
-  .search-bar {
-    width: 100%;
-    padding: 10px 14px;
-    border-radius: 10px;
-    border: 1px solid var(--border2);
-    background: var(--bg2);
-    color: var(--text);
-    font-size: 14px;
-    margin-bottom: 20px;
-    outline: none;
-    transition: border 0.15s;
-  }
-  .search-bar:focus { border-color: var(--accent); }
-  .search-bar::placeholder { color: var(--muted); }
+/* NAV */
+.sb-nav{flex:1;overflow-y:auto;padding:8px 8px;scrollbar-width:thin;scrollbar-color:var(--border2) transparent}
 
-  .vocab-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 10px;
-  }
-  .vocab-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 14px 16px;
-    transition: border-color 0.15s, transform 0.1s;
-  }
-  .vocab-card:hover { border-color: var(--border2); transform: translateY(-1px); }
-  .vocab-no { font-size: 11px; color: var(--muted); margin-bottom: 6px; font-variant-numeric: tabular-nums; }
-  .vocab-jp { font-size: 22px; color: var(--text); margin-bottom: 4px; letter-spacing: 1px; }
-  .vocab-id { font-size: 12px; color: var(--accent2); font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; }
+.nav-section{margin-bottom:2px}
+.nav-section-btn{
+  width:100%;display:flex;align-items:center;justify-content:space-between;
+  padding:9px 10px;border-radius:8px;
+  font-size:13px;font-weight:600;color:var(--text);
+  transition:background .15s;
+}
+.nav-section-btn:hover{background:var(--bg3)}
+.nav-section-btn .icon{font-size:14px;margin-right:6px}
+.chevron{font-size:10px;color:var(--muted);transition:transform .2s;display:inline-block}
+.chevron.open{transform:rotate(90deg)}
 
-  /* ── SEGMEN 2: FLASHCARD ── */
-  .fc-wrap { display: flex; flex-direction: column; align-items: center; gap: 24px; padding-top: 12px; }
-  .fc-progress-bar-wrap { width: 100%; max-width: 480px; background: var(--bg2); border-radius: 99px; height: 4px; overflow: hidden; }
-  .fc-progress-bar { height: 4px; background: var(--accent); border-radius: 99px; transition: width 0.3s; }
-  .fc-counter { font-size: 13px; color: var(--muted); }
+.nav-children{overflow:hidden;max-height:0;transition:max-height .25s ease}
+.nav-children.open{max-height:400px}
 
-  .flashcard-scene {
-    width: 100%;
-    max-width: 480px;
-    height: 260px;
-    perspective: 1200px;
-    cursor: pointer;
-  }
-  .flashcard-inner {
-    width: 100%; height: 100%;
-    position: relative;
-    transform-style: preserve-3d;
-    transition: transform 0.45s cubic-bezier(.4,0,.2,1);
-  }
-  .flashcard-inner.flipped { transform: rotateY(180deg); }
-  .fc-face {
-    position: absolute; inset: 0;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    background: var(--bg2);
-    border: 1px solid var(--border2);
-    border-radius: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    padding: 24px;
-  }
-  .fc-face.back { transform: rotateY(180deg); background: var(--bg3); border-color: var(--accent); }
-  .fc-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
-  .fc-main { font-size: 52px; color: var(--text); letter-spacing: 2px; text-align: center; }
-  .fc-main.id { font-size: 24px; color: var(--accent2); font-weight: 600; text-align: center; letter-spacing: 0; }
-  .fc-hint { font-size: 12px; color: var(--muted); }
+.nav-child-btn{
+  display:block;width:100%;text-align:left;
+  padding:7px 10px 7px 30px;
+  border-radius:7px;font-size:13px;color:var(--muted);
+  transition:background .12s,color .12s;margin:1px 0;
+}
+.nav-child-btn:hover:not(.soon){background:var(--bg3);color:var(--text)}
+.nav-child-btn.active{background:var(--acbg);color:var(--accent2);font-weight:500}
+.nav-child-btn.soon{opacity:.4;cursor:default}
+.nav-child-btn.soon::after{content:' 🔒';font-size:10px}
 
-  .fc-controls { display: flex; gap: 12px; align-items: center; }
-  .fc-btn {
-    padding: 10px 24px;
-    border-radius: 10px;
-    border: 1px solid var(--border2);
-    background: var(--bg2);
-    color: var(--text);
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .fc-btn:hover { background: var(--bg3); border-color: var(--accent); color: var(--accent2); }
-  .fc-btn.primary { background: var(--accent-glow); border-color: var(--accent); color: var(--accent2); }
-  .fc-shuffle-btn {
-    padding: 8px 14px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--muted);
-    font-size: 12px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .fc-shuffle-btn:hover { color: var(--text); border-color: var(--border2); }
+/* THEME TOGGLE */
+.sb-footer{
+  padding:13px 14px;
+  border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.sb-footer-label{font-size:12px;color:var(--muted)}
+.tog{position:relative;display:inline-block;width:38px;height:21px}
+.tog input{opacity:0;width:0;height:0}
+.tog-track{
+  position:absolute;inset:0;background:var(--tog-off);
+  border-radius:99px;cursor:pointer;transition:background .2s;
+}
+.tog-track::before{
+  content:'';position:absolute;
+  width:15px;height:15px;left:3px;top:3px;
+  background:#fff;border-radius:50%;transition:transform .2s;
+}
+input:checked+.tog-track{background:var(--accent)}
+input:checked+.tog-track::before{transform:translateX(17px)}
 
-  /* ── SEGMEN 3: QUIZ ── */
-  .quiz-wrap { display: flex; flex-direction: column; align-items: center; gap: 20px; padding-top: 12px; }
-  .quiz-score-row { display: flex; gap: 20px; }
-  .score-pill {
-    padding: 5px 14px;
-    border-radius: 99px;
-    font-size: 13px;
-    font-weight: 600;
-  }
-  .score-correct { background: var(--green-bg); color: var(--green); }
-  .score-wrong { background: var(--red-bg); color: var(--red); }
+/* ════════════════════════════════════════
+   TOPBAR
+════════════════════════════════════════ */
+#topbar{
+  position:sticky;top:0;height:var(--th);
+  background:var(--tbg);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:14px;
+  padding:0 20px;z-index:100;
+}
+.hbg{
+  display:flex;flex-direction:column;gap:5px;
+  padding:6px;border-radius:7px;flex-shrink:0;
+  transition:background .15s;
+}
+.hbg:hover{background:var(--bg3)}
+.hbg span{display:block;width:19px;height:2px;background:var(--text);border-radius:2px}
+#topbar-title{font-size:15px;font-weight:600;letter-spacing:-.2px}
 
-  .quiz-card {
-    width: 100%;
-    max-width: 520px;
-    background: var(--bg2);
-    border: 1px solid var(--border2);
-    border-radius: 20px;
-    padding: 32px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-  }
-  .quiz-prompt-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
-  .quiz-prompt { font-size: 28px; font-weight: 700; color: var(--text); text-align: center; }
-  .quiz-subprompt { font-size: 13px; color: var(--muted); text-align: center; }
+/* ════════════════════════════════════════
+   MAIN + CONTENT
+════════════════════════════════════════ */
+.main{min-height:100vh;display:flex;flex-direction:column}
+#content{flex:1;padding:26px 22px;max-width:980px;margin:0 auto;width:100%}
 
-  .quiz-input-wrap { width: 100%; display: flex; flex-direction: column; gap: 10px; }
-  .quiz-input {
-    width: 100%;
-    padding: 14px 16px;
-    border-radius: 12px;
-    border: 1.5px solid var(--border2);
-    background: var(--bg);
-    color: var(--text);
-    font-size: 26px;
-    text-align: center;
-    letter-spacing: 2px;
-    outline: none;
-    transition: border-color 0.15s;
-  }
-  .quiz-input:focus { border-color: var(--accent); }
-  .quiz-input.correct { border-color: var(--green); background: var(--green-bg); }
-  .quiz-input.wrong { border-color: var(--red); background: var(--red-bg); }
+/* ════════════════════════════════════════
+   SHARED COMPONENTS
+════════════════════════════════════════ */
 
-  .quiz-submit {
-    width: 100%;
-    padding: 13px;
-    border-radius: 12px;
-    border: none;
-    background: var(--accent);
-    color: #fff;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.15s;
-  }
-  .quiz-submit:hover { opacity: 0.9; }
-  .quiz-submit:disabled { opacity: 0.4; cursor: default; }
+/* Page header */
+.ph{margin-bottom:20px}
+.ph h2{font-size:21px;font-weight:700;letter-spacing:-.4px}
+.ph p{color:var(--muted);font-size:13px;margin-top:3px}
 
-  .quiz-feedback {
-    width: 100%;
-    max-width: 520px;
-    border-radius: 14px;
-    padding: 14px 18px;
-    font-size: 14px;
-    display: none;
-  }
-  .quiz-feedback.show { display: block; }
-  .quiz-feedback.correct { background: var(--green-bg); border: 1px solid rgba(74,222,154,0.2); color: var(--green); }
-  .quiz-feedback.wrong { background: var(--red-bg); border: 1px solid rgba(248,113,113,0.2); color: var(--red); }
-  .feedback-answer { font-size: 22px; font-weight: 700; margin-top: 4px; }
+/* Segment tabs */
+.seg-tabs{
+  display:flex;gap:3px;margin-bottom:20px;
+  background:var(--bg3);padding:3px;
+  border-radius:10px;width:fit-content;
+}
+.seg-tab{
+  padding:7px 18px;border-radius:8px;
+  font-size:13px;font-weight:500;color:var(--muted);
+  transition:all .15s;
+}
+.seg-tab:hover{color:var(--text)}
+.seg-tab.on{background:var(--bg2);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.15)}
 
-  .quiz-next-btn {
-    padding: 10px 28px;
-    border-radius: 10px;
-    border: 1px solid var(--accent);
-    background: var(--accent-glow);
-    color: var(--accent2);
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.15s;
-    display: none;
-  }
-  .quiz-next-btn.show { display: inline-block; }
-  .quiz-next-btn:hover { background: var(--accent); color: #fff; }
+/* Search */
+.search{
+  width:100%;padding:10px 14px;
+  border-radius:10px;border:1px solid var(--border2);
+  background:var(--bg2);color:var(--text);
+  font-size:14px;margin-bottom:16px;outline:none;
+  transition:border-color .15s;
+}
+.search:focus{border-color:var(--accent)}
+.search::placeholder{color:var(--muted)}
 
-  .quiz-result {
-    width: 100%;
-    max-width: 520px;
-    background: var(--bg2);
-    border: 1px solid var(--border2);
-    border-radius: 20px;
-    padding: 40px 32px;
-    text-align: center;
-    display: none;
-  }
-  .quiz-result.show { display: block; }
-  .result-emoji { font-size: 48px; margin-bottom: 12px; }
-  .result-title { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
-  .result-sub { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
-  .result-stats { display: flex; justify-content: center; gap: 32px; margin-bottom: 28px; }
-  .result-stat { display: flex; flex-direction: column; gap: 4px; }
-  .result-stat-n { font-size: 36px; font-weight: 700; }
-  .result-stat-l { font-size: 12px; color: var(--muted); }
-  .restart-btn {
-    padding: 12px 32px;
-    border-radius: 12px;
-    border: none;
-    background: var(--accent);
-    color: #fff;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  .restart-btn:hover { opacity: 0.9; }
+/* Vocab grid */
+.vocab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:9px}
+.vc{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:11px;padding:13px 15px;
+  transition:border-color .15s,transform .1s;
+}
+.vc:hover{border-color:var(--border2);transform:translateY(-1px)}
+.vc-no{font-size:10px;color:var(--muted);margin-bottom:4px}
+.vc-jp{font-size:21px;margin-bottom:3px;letter-spacing:1px}
+.vc-id{font-size:11px;color:var(--accent2);font-weight:600;text-transform:uppercase;letter-spacing:.3px}
 
-  @media (max-width: 600px) {
-    nav { padding: 12px 14px; flex-wrap: wrap; gap: 6px; }
-    .tab-btn { padding: 6px 11px; font-size: 12px; }
-    .page { padding: 20px 14px; }
-    .vocab-grid { grid-template-columns: repeat(2, 1fr); }
-    .fc-main { font-size: 40px; }
-  }
+/* Flashcard */
+.fc-wrap{display:flex;flex-direction:column;align-items:center;gap:20px}
+.fc-meta{display:flex;justify-content:space-between;align-items:center;width:100%;max-width:460px}
+.fc-ctr{font-size:12px;color:var(--muted)}
+.fc-shuffle{
+  padding:5px 11px;border-radius:7px;
+  border:1px solid var(--border2);color:var(--muted);
+  font-size:12px;transition:all .15s;
+}
+.fc-shuffle:hover{color:var(--text);border-color:var(--accent2)}
+.pbar-wrap{width:100%;max-width:460px;height:3px;background:var(--bg3);border-radius:99px;overflow:hidden}
+.pbar{height:100%;background:var(--accent);border-radius:99px;transition:width .3s}
+.fc-scene{width:100%;max-width:460px;height:244px;perspective:1200px;cursor:pointer}
+.fc-inner{
+  width:100%;height:100%;position:relative;
+  transform-style:preserve-3d;
+  transition:transform .42s cubic-bezier(.4,0,.2,1);
+}
+.fc-inner.flipped{transform:rotateY(180deg)}
+.fc-face{
+  position:absolute;inset:0;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:16px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;padding:22px;
+}
+.fc-face.back{transform:rotateY(180deg);border-color:var(--accent);background:var(--bg3)}
+.fc-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.fc-main{font-size:46px;letter-spacing:2px;text-align:center}
+.fc-main.id{font-size:21px;color:var(--accent2);font-weight:600;letter-spacing:0}
+.fc-hint{font-size:11px;color:var(--muted)}
+.fc-btns{display:flex;gap:9px}
+.fc-btn{
+  padding:8px 20px;border-radius:8px;
+  border:1px solid var(--border2);
+  background:var(--bg2);color:var(--text);
+  font-size:13px;font-weight:500;transition:all .15s;
+}
+.fc-btn:hover{border-color:var(--accent);color:var(--accent2)}
+.fc-btn.p{background:var(--acbg);border-color:var(--accent);color:var(--accent2)}
+
+/* Quiz */
+.qz-wrap{display:flex;flex-direction:column;align-items:center;gap:16px}
+.qz-score{display:flex;gap:12px;align-items:center}
+.pill{padding:4px 12px;border-radius:99px;font-size:12px;font-weight:600}
+.pc{background:var(--gbg);color:var(--green)}
+.pw{background:var(--rbg);color:var(--red)}
+.qz-card{
+  width:100%;max-width:500px;
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:16px;padding:26px 26px 22px;
+  display:flex;flex-direction:column;align-items:center;gap:16px;
+}
+.qz-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.qz-prompt{font-size:24px;font-weight:700;text-align:center}
+.qz-sub{font-size:12px;color:var(--muted)}
+.qz-input{
+  width:100%;padding:11px 13px;
+  border-radius:10px;border:1.5px solid var(--border2);
+  background:var(--bg);color:var(--text);
+  font-size:27px;text-align:center;letter-spacing:2px;
+  outline:none;transition:border-color .15s,background .15s;
+}
+.qz-input:focus{border-color:var(--accent)}
+.qz-input.ok{border-color:var(--green);background:var(--gbg)}
+.qz-input.no{border-color:var(--red);background:var(--rbg)}
+.qz-btn{
+  width:100%;padding:11px;border-radius:10px;
+  background:var(--accent);color:#fff;
+  font-size:14px;font-weight:600;transition:opacity .15s;
+}
+.qz-btn:hover{opacity:.88}
+.qz-btn:disabled{opacity:.35;cursor:default}
+.qz-fb{width:100%;max-width:500px;border-radius:10px;padding:12px 15px;font-size:13px;display:none}
+.qz-fb.show{display:block}
+.qz-fb.ok{background:var(--gbg);border:1px solid rgba(74,222,154,.2);color:var(--green)}
+.qz-fb.no{background:var(--rbg);border:1px solid rgba(248,113,113,.2);color:var(--red)}
+.qz-fb-ans{font-size:21px;font-weight:700;margin-top:3px}
+.qz-next{
+  padding:8px 24px;border-radius:8px;
+  border:1px solid var(--accent);background:var(--acbg);
+  color:var(--accent2);font-size:13px;font-weight:500;
+  display:none;transition:all .15s;
+}
+.qz-next.show{display:inline-block}
+.qz-next:hover{background:var(--accent);color:#fff}
+.qz-result{
+  width:100%;max-width:500px;
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:16px;padding:34px 26px;
+  text-align:center;display:none;
+}
+.qz-result.show{display:block}
+.res-emoji{font-size:42px;margin-bottom:10px}
+.res-title{font-size:19px;font-weight:700;margin-bottom:5px}
+.res-sub{font-size:13px;color:var(--muted);margin-bottom:20px}
+.res-stats{display:flex;justify-content:center;gap:28px;margin-bottom:22px}
+.res-stat{display:flex;flex-direction:column;gap:3px;align-items:center}
+.res-n{font-size:30px;font-weight:700}
+.res-l{font-size:11px;color:var(--muted)}
+.res-restart{
+  padding:10px 26px;border-radius:10px;
+  background:var(--accent);color:#fff;
+  font-size:14px;font-weight:600;
+}
+.res-restart:hover{opacity:.88}
+
+/* Toast */
+#toast{
+  position:fixed;bottom:22px;left:50%;
+  transform:translateX(-50%) translateY(16px);
+  background:var(--bg3);border:1px solid var(--border2);
+  color:var(--text);padding:9px 18px;
+  border-radius:10px;font-size:13px;
+  opacity:0;transition:opacity .2s,transform .2s;
+  z-index:999;white-space:nowrap;pointer-events:none;
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ════════════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════════ */
+@media(max-width:600px){
+  #content{padding:16px 13px}
+  .vocab-grid{grid-template-columns:repeat(2,1fr)}
+  .fc-main{font-size:34px}
+}
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="nav-logo"><span>🇯🇵</span> K. Sifat</div>
-  <button class="tab-btn active" onclick="showPage('list')">① Daftar</button>
-  <button class="tab-btn" onclick="showPage('flash')">② Flashcard</button>
-  <button class="tab-btn" onclick="showPage('quiz')">③ Quiz</button>
-</nav>
+<div id="overlay" onclick="closeSidebar()"></div>
 
-<!-- SEGMEN 1 -->
-<div class="page active" id="page-list">
-  <div class="page-header">
-    <h1>Kata Sifat — 形容詞</h1>
-    <p>70 kata sifat lengkap dengan artinya</p>
+<!-- ── SIDEBAR ── -->
+<aside id="sidebar">
+  <div class="sb-head">
+    <span class="sb-logo">🇯🇵 にほんご</span>
+    <button class="sb-close" onclick="closeSidebar()">✕</button>
   </div>
-  <input class="search-bar" id="searchInput" placeholder="Cari kata atau arti..." oninput="filterVocab()">
-  <div class="vocab-grid" id="vocabGrid"></div>
+
+  <nav class="sb-nav" id="sb-nav">
+    <!-- Menu dirender oleh JS — tambah item di MENU_CONFIG di bawah -->
+  </nav>
+
+  <div class="sb-footer">
+    <span class="sb-footer-label" id="theme-lbl">🌙 Dark Mode</span>
+    <label class="tog">
+      <input type="checkbox" id="theme-tog" onchange="toggleTheme()">
+      <span class="tog-track"></span>
+    </label>
+  </div>
+</aside>
+
+<!-- ── MAIN ── -->
+<div class="main">
+  <header id="topbar">
+    <button class="hbg" onclick="openSidebar()">
+      <span></span><span></span><span></span>
+    </button>
+    <span id="topbar-title">にほんご</span>
+  </header>
+  <main id="content"><p style="color:var(--muted);text-align:center;margin-top:60px">Memuat...</p></main>
 </div>
 
-<!-- SEGMEN 2 -->
-<div class="page" id="page-flash">
-  <div class="page-header">
-    <h1>Flashcard</h1>
-    <p>Klik kartu untuk balik. Hafal satu per satu.</p>
-  </div>
-  <div class="fc-wrap">
-    <div style="display:flex;justify-content:space-between;align-items:center;width:100%;max-width:480px;">
-      <span class="fc-counter" id="fcCounter">1 / 70</span>
-      <button class="fc-shuffle-btn" onclick="shuffleFlash()">🔀 Acak</button>
-    </div>
-    <div class="fc-progress-bar-wrap"><div class="fc-progress-bar" id="fcBar" style="width:1.4%"></div></div>
+<div id="toast"></div>
 
-    <div class="flashcard-scene" onclick="flipCard()">
-      <div class="flashcard-inner" id="fcInner">
+<script>
+/* ════════════════════════════════════════
+   MENU CONFIG
+   ↓ EDIT DI SINI UNTUK TAMBAH MENU BARU ↓
+════════════════════════════════════════ */
+const MENU = [
+  {
+    label: '📚 Kosakata', id: 'kosakata',
+    children: [
+      { label: 'Kata Sifat', page: 'kata-sifat' },
+      { label: 'Kata Benda', page: 'kata-benda', soon: true },
+      { label: 'Kata Tunjuk', page: 'kata-tunjuk', soon: true },
+      { label: 'Kata Kerja', page: 'kata-kerja', soon: true },
+    ]
+  },
+  {
+    label: '漢 Kanji', id: 'kanji',
+    children: [
+      { label: 'Level N5', page: 'kanji-n5', soon: true },
+      { label: 'Level N4', page: 'kanji-n4', soon: true },
+    ]
+  },
+  {
+    label: '🔢 Angka & Waktu', id: 'angka',
+    children: [
+      { label: 'Angka', page: 'angka', soon: true },
+      { label: 'Bulan & Tanggal', page: 'bulan', soon: true },
+      { label: 'Hari & Jam', page: 'hari', soon: true },
+    ]
+  },
+  {
+    label: '✏️ Partikel', id: 'partikel',
+    children: [
+      { label: 'Partikel Dasar', page: 'partikel-dasar', soon: true },
+    ]
+  },
+  // ── TAMBAH SECTION BARU DI SINI ──
+  // {
+  //   label: '💬 Kaiwa', id: 'kaiwa',
+  //   children: [
+  //     { label: 'Percakapan Dasar', page: 'kaiwa-dasar', soon: true },
+  //   ]
+  // },
+];
+
+/* ════════════════════════════════════════
+   PAGE REGISTRY
+   Halaman register dirinya lewat App.register()
+════════════════════════════════════════ */
+const _pages = {};
+const App = {
+  register(id, fn) { _pages[id] = fn; },
+  navigate(id) {
+    if (!_pages[id]) { toast('Halaman ini belum tersedia 🚧'); return; }
+    const content = document.getElementById('content');
+    content.innerHTML = '';
+    _pages[id](content);
+    // Update topbar
+    const title = findMenuLabel(id);
+    document.getElementById('topbar-title').textContent = title;
+    // Update active item
+    document.querySelectorAll('.nav-child-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.page === id)
+    );
+    closeSidebar();
+  }
+};
+
+function findMenuLabel(page) {
+  for (const s of MENU) {
+    for (const c of s.children) {
+      if (c.page === page) return c.label;
+    }
+  }
+  return page;
+}
+
+/* ════════════════════════════════════════
+   RENDER SIDEBAR NAV FROM MENU CONFIG
+════════════════════════════════════════ */
+function buildNav() {
+  const nav = document.getElementById('sb-nav');
+  nav.innerHTML = MENU.map(sec => `
+    <div class="nav-section">
+      <button class="nav-section-btn" onclick="toggleSection('${sec.id}')">
+        <span>${sec.label}</span>
+        <span class="chevron" id="chev-${sec.id}">▸</span>
+      </button>
+      <ul class="nav-children" id="sec-${sec.id}">
+        ${sec.children.map(c => `
+          <li>
+            <button
+              class="nav-child-btn${c.soon ? ' soon' : ''}"
+              data-page="${c.page}"
+              onclick="${c.soon ? `toast('${c.label} segera hadir! 🚧')` : `App.navigate('${c.page}')`}"
+            >${c.label}</button>
+          </li>
+        `).join('')}
+      </ul>
+    </div>
+  `).join('');
+}
+
+function toggleSection(id) {
+  const sec  = document.getElementById('sec-' + id);
+  const chev = document.getElementById('chev-' + id);
+  const wasOpen = sec.classList.contains('open');
+  document.querySelectorAll('.nav-children').forEach(el => el.classList.remove('open'));
+  document.querySelectorAll('.chevron').forEach(el => el.classList.remove('open'));
+  if (!wasOpen) { sec.classList.add('open'); chev.classList.add('open'); }
+}
+
+/* ════════════════════════════════════════
+   SIDEBAR OPEN / CLOSE
+════════════════════════════════════════ */
+function openSidebar()  {
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('overlay').classList.add('show');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+/* ════════════════════════════════════════
+   THEME
+════════════════════════════════════════ */
+function toggleTheme() {
+  const html = document.documentElement;
+  const dark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', dark ? 'light' : 'dark');
+  document.getElementById('theme-lbl').textContent = dark ? '☀️ Light Mode' : '🌙 Dark Mode';
+  localStorage.setItem('nh-theme', dark ? 'light' : 'dark');
+}
+
+/* ════════════════════════════════════════
+   TOAST
+════════════════════════════════════════ */
+let _tt;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(_tt);
+  _tt = setTimeout(() => el.classList.remove('show'), 2600);
+}
+
+/* ════════════════════════════════════════
+   INIT
+════════════════════════════════════════ */
+(function init() {
+  // Restore theme
+  const saved = localStorage.getItem('nh-theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', saved);
+  document.getElementById('theme-lbl').textContent = saved === 'dark' ? '🌙 Dark Mode' : '☀️ Light Mode';
+  document.getElementById('theme-tog').checked = saved === 'light';
+
+  buildNav();
+
+  // Buka section pertama by default
+  if (MENU.length) toggleSection(MENU[0].id);
+})();
+
+
+/* ════════════════════════════════════════════════════════════════
+   ██████████████████████████████████████████████████████████████
+   PAGE: KATA SIFAT
+   Untuk tambah halaman baru, copy blok ini dari sini sampai bawah
+   ganti id, data, dan label sesuai kebutuhan
+   ██████████████████████████████████████████████████████████████
+════════════════════════════════════════════════════════════════ */
+;(function() {
+
+/* ── DATA ── */
+const DATA = [
+  {jp:'きれいな',    id:'CANTIK'},
+  {jp:'ハンサムな',  id:'TAMPAN'},
+  {jp:'しんせつな',  id:'BAIK HATI / RAMAH'},
+  {jp:'げんきな',    id:'SEHAT'},
+  {jp:'ゆめいな',    id:'TERKENAL'},
+  {jp:'にぎやかな',  id:'RAMAI'},
+  {jp:'しずかな',    id:'TENANG / SEPI'},
+  {jp:'たのしい',    id:'GEMBIRA'},
+  {jp:'おおきい',    id:'BESAR'},
+  {jp:'ちいさい',    id:'KECIL'},
+  {jp:'あたらしい',  id:'BARU'},
+  {jp:'ふるい',      id:'LAMA / USANG'},
+  {jp:'いい',        id:'BAGUS'},
+  {jp:'わるい',      id:'JELEK'},
+  {jp:'あつい',      id:'PANAS (SUHU)'},
+  {jp:'さむい',      id:'DINGIN (SUHU)'},
+  {jp:'つめたい',    id:'DINGIN (BENDA)'},
+  {jp:'やさしい',    id:'MUDAH'},
+  {jp:'むずかしい',  id:'SULIT'},
+  {jp:'たかい',      id:'TINGGI'},
+  {jp:'ひくい',      id:'RENDAH / PENDEK'},
+  {jp:'たかい',      id:'MAHAL'},
+  {jp:'やすい',      id:'MURAH'},
+  {jp:'おもしろい',  id:'MENARIK'},
+  {jp:'つまらない',  id:'MEMBOSANKAN'},
+  {jp:'おいしい',    id:'ENAK'},
+  {jp:'まずい',      id:'HAMBAR / TIDAK ENAK'},
+  {jp:'しろい',      id:'PUTIH'},
+  {jp:'くろい',      id:'HITAM'},
+  {jp:'あかい',      id:'MERAH'},
+  {jp:'あおい',      id:'BIRU'},
+  {jp:'すきな',      id:'SUKA'},
+  {jp:'きらいな',    id:'BENCI'},
+  {jp:'じょうずな',  id:'PANDAI'},
+  {jp:'へたな',      id:'BODOH'},
+  {jp:'ちかい',      id:'DEKAT'},
+  {jp:'とおい',      id:'JAUH'},
+  {jp:'はやい',      id:'CEPAT'},
+  {jp:'おそい',      id:'LAMBAT'},
+  {jp:'おおい',      id:'BANYAK'},
+  {jp:'すくない',    id:'SEDIKIT'},
+  {jp:'あたたかい',  id:'HANGAT'},
+  {jp:'すずしい',    id:'SEJUK'},
+  {jp:'ながい',      id:'PANJANG'},
+  {jp:'みじかい',    id:'PENDEK'},
+  {jp:'おもい',      id:'BERAT'},
+  {jp:'かるい',      id:'RINGAN'},
+  {jp:'あまい',      id:'MANIS'},
+  {jp:'からい',      id:'PEDAS'},
+  {jp:'ひまな',      id:'SENGGANG'},
+  {jp:'いそがしい',  id:'SIBUK'},
+  {jp:'わかい',      id:'MUDA'},
+  {jp:'としうえの',  id:'TUA'},
+  {jp:'たいせつな',  id:'PENTING'},
+  {jp:'ほしい',      id:'INGIN'},
+  {jp:'あかるい',    id:'TERANG'},
+  {jp:'くらい',      id:'GELAP'},
+  {jp:'ひろい',      id:'LUAS'},
+  {jp:'せまい',      id:'SEMPIT'},
+  {jp:'べんりな',    id:'PRAKTIS'},
+  {jp:'ふべんな',    id:'TIDAK PRAKTIS'},
+  {jp:'かんたんな',  id:'SEDERHANA'},
+  {jp:'ふくざつな',  id:'RUMIT'},
+  {jp:'せがたかい',  id:'TINGGI (BADAN)'},
+  {jp:'せがひくい',  id:'PENDEK (BADAN)'},
+  {jp:'あぶない',    id:'BERBAHAYA'},
+  {jp:'うれしい',    id:'SENANG'},
+  {jp:'かなしい',    id:'SEDIH'},
+  {jp:'さびしい',    id:'KESEPIAN'},
+  {jp:'ねむい',      id:'MENGANTUK'},
+].map((v,i) => ({...v, no:i+1}));
+
+const PAGE_ID    = 'kata-sifat';
+const PAGE_TITLE = 'Kata Sifat';
+const TOTAL      = DATA.length;
+
+/* ── STATE ── */
+let seg = 'daftar';
+// flashcard
+let fcOrder = [...DATA], fcIdx = 0, fcFlipped = false;
+// quiz
+let qOrder = [], qIdx = 0, qOk = 0, qNg = 0, qDone = false;
+
+/* ── RENDER ── */
+App.register(PAGE_ID, function(root) {
+  root.innerHTML = `
+    <div class="ph">
+      <h2>${PAGE_TITLE} — 形容詞</h2>
+      <p>${TOTAL} kata sifat</p>
+    </div>
+    <div class="seg-tabs">
+      <button class="seg-tab on"  id="tab-daftar"    onclick="ks_seg('daftar')">① Daftar</button>
+      <button class="seg-tab"     id="tab-flashcard" onclick="ks_seg('flashcard')">② Flashcard</button>
+      <button class="seg-tab"     id="tab-quiz"      onclick="ks_seg('quiz')">③ Quiz</button>
+    </div>
+    <div id="ks-body"></div>
+  `;
+  ks_renderSeg();
+});
+
+window.ks_seg = function(s) {
+  seg = s;
+  ['daftar','flashcard','quiz'].forEach(x =>
+    document.getElementById('tab-'+x)?.classList.toggle('on', x===s)
+  );
+  ks_renderSeg();
+};
+
+function ks_renderSeg() {
+  const body = document.getElementById('ks-body');
+  if (!body) return;
+  if (seg === 'daftar')    body.innerHTML = ks_daftar();
+  if (seg === 'flashcard') { body.innerHTML = ks_fcHTML(); ks_fcBind(); }
+  if (seg === 'quiz')      { body.innerHTML = ks_qzHTML(); ks_qzStart(); }
+}
+
+/* ── DAFTAR ── */
+function ks_daftar() {
+  const cards = DATA.map(v => `
+    <div class="vc">
+      <div class="vc-no">${String(v.no).padStart(2,'0')}</div>
+      <div class="vc-jp">${v.jp}</div>
+      <div class="vc-id">${v.id}</div>
+    </div>`).join('');
+  return `
+    <input class="search" placeholder="Cari kata atau arti..." oninput="ks_filter(this.value)">
+    <div class="vocab-grid" id="ks-grid">${cards}</div>`;
+}
+window.ks_filter = function(q) {
+  q = q.toLowerCase();
+  const filtered = DATA.filter(v => v.jp.includes(q) || v.id.toLowerCase().includes(q));
+  document.getElementById('ks-grid').innerHTML = filtered.map(v => `
+    <div class="vc">
+      <div class="vc-no">${String(v.no).padStart(2,'0')}</div>
+      <div class="vc-jp">${v.jp}</div>
+      <div class="vc-id">${v.id}</div>
+    </div>`).join('');
+};
+
+/* ── FLASHCARD ── */
+function ks_fcHTML() {
+  return `
+  <div class="fc-wrap">
+    <div class="fc-meta">
+      <span class="fc-ctr" id="fc-ctr">1 / ${TOTAL}</span>
+      <button class="fc-shuffle" onclick="ks_shuffle()">🔀 Acak</button>
+    </div>
+    <div class="pbar-wrap"><div class="pbar" id="fc-bar" style="width:${100/TOTAL}%"></div></div>
+    <div class="fc-scene" onclick="ks_flip()">
+      <div class="fc-inner" id="fc-inner">
         <div class="fc-face front">
-          <div class="fc-label">にほんご</div>
-          <div class="fc-main" id="fcFront">きれいな</div>
+          <div class="fc-lbl">にほんご</div>
+          <div class="fc-main" id="fc-front"></div>
           <div class="fc-hint">klik untuk lihat arti</div>
         </div>
         <div class="fc-face back">
-          <div class="fc-label">いみ (arti)</div>
-          <div class="fc-main id" id="fcBack">CANTIK</div>
+          <div class="fc-lbl">いみ</div>
+          <div class="fc-main id" id="fc-back"></div>
         </div>
       </div>
     </div>
-
-    <div class="fc-controls">
-      <button class="fc-btn" onclick="prevCard()">← Prev</button>
-      <button class="fc-btn primary" onclick="nextCard()">Next →</button>
+    <div class="fc-btns">
+      <button class="fc-btn" onclick="ks_fcPrev()">← Prev</button>
+      <button class="fc-btn p" onclick="ks_fcNext()">Next →</button>
     </div>
-  </div>
-</div>
-
-<!-- SEGMEN 3 -->
-<div class="page" id="page-quiz">
-  <div class="page-header">
-    <h1>Quiz</h1>
-    <p>Baca arti, tulis dalam bahasa Jepang (hiragana/katakana).</p>
-  </div>
-  <div class="quiz-wrap" id="quizWrap">
-    <div class="quiz-score-row">
-      <div class="score-pill score-correct">✓ <span id="qCorrect">0</span></div>
-      <div class="score-pill score-wrong">✗ <span id="qWrong">0</span></div>
-      <span class="fc-counter" id="qCounter">0 / 70</span>
-    </div>
-    <div class="fc-progress-bar-wrap" style="max-width:520px;">
-      <div class="fc-progress-bar" id="qBar" style="width:0%"></div>
-    </div>
-
-    <div class="quiz-card" id="quizCard">
-      <div class="quiz-prompt-label">Arti dalam bahasa Indonesia</div>
-      <div class="quiz-prompt" id="qPrompt">CANTIK</div>
-      <div class="quiz-subprompt" id="qSub">Tulis dalam hiragana</div>
-      <div class="quiz-input-wrap">
-        <input class="quiz-input" id="qInput" placeholder="tulis di sini..." autocomplete="off"
-               onkeydown="if(event.key==='Enter') submitAnswer()">
-        <button class="quiz-submit" id="qSubmit" onclick="submitAnswer()">Cek Jawaban</button>
-      </div>
-    </div>
-
-    <div class="quiz-feedback" id="qFeedback">
-      <div id="qFeedbackText"></div>
-      <div class="feedback-answer" id="qFeedbackAnswer"></div>
-    </div>
-    <button class="quiz-next-btn" id="qNext" onclick="nextQuiz()">Soal berikutnya →</button>
-
-    <div class="quiz-result" id="quizResult">
-      <div class="result-emoji" id="resultEmoji">🎉</div>
-      <div class="result-title" id="resultTitle">Quiz selesai!</div>
-      <div class="result-sub" id="resultSub"></div>
-      <div class="result-stats">
-        <div class="result-stat">
-          <div class="result-stat-n" style="color:var(--green)" id="rCorrect">0</div>
-          <div class="result-stat-l">Benar</div>
-        </div>
-        <div class="result-stat">
-          <div class="result-stat-n" style="color:var(--red)" id="rWrong">0</div>
-          <div class="result-stat-l">Salah</div>
-        </div>
-        <div class="result-stat">
-          <div class="result-stat-n" style="color:var(--yellow)" id="rPct">0%</div>
-          <div class="result-stat-l">Skor</div>
-        </div>
-      </div>
-      <button class="restart-btn" onclick="restartQuiz()">Ulangi Quiz</button>
-    </div>
-  </div>
-</div>
-
-<script>
-const vocab = [
-  {jp:"きれいな", id:"CANTIK"},
-  {jp:"ハンサムな", id:"TAMPAN"},
-  {jp:"しんせつな", id:"BAIK HATI / RAMAH"},
-  {jp:"げんきな", id:"SEHAT"},
-  {jp:"ゆめいな", id:"TERKENAL"},
-  {jp:"にぎやかな", id:"RAMAI"},
-  {jp:"しずかな", id:"TENANG / SEPI"},
-  {jp:"たのしい", id:"GEMBIRA"},
-  {jp:"おおきい", id:"BESAR"},
-  {jp:"ちいさい", id:"KECIL"},
-  {jp:"あたらしい", id:"BARU"},
-  {jp:"ふるい", id:"LAMA / USANG"},
-  {jp:"いい", id:"BAGUS"},
-  {jp:"わるい", id:"JELEK"},
-  {jp:"あつい", id:"PANAS (SUHU)"},
-  {jp:"さむい", id:"DINGIN (SUHU)"},
-  {jp:"つめたい", id:"DINGIN (BENDA)"},
-  {jp:"やさしい", id:"MUDAH"},
-  {jp:"むずかしい", id:"SULIT"},
-  {jp:"たかい", id:"TINGGI"},
-  {jp:"ひくい", id:"RENDAH / PENDEK"},
-  {jp:"たかい", id:"MAHAL"},
-  {jp:"やすい", id:"MURAH"},
-  {jp:"おもしろい", id:"MENARIK"},
-  {jp:"つまらない", id:"MEMBOSANKAN"},
-  {jp:"おいしい", id:"ENAK"},
-  {jp:"まずい", id:"HAMBAR / TIDAK ENAK"},
-  {jp:"しろい", id:"PUTIH"},
-  {jp:"くろい", id:"HITAM"},
-  {jp:"あかい", id:"MERAH"},
-  {jp:"あおい", id:"BIRU"},
-  {jp:"すきな", id:"SUKA"},
-  {jp:"きらいな", id:"BENCI"},
-  {jp:"じょうずな", id:"PANDAI"},
-  {jp:"へたな", id:"BODOH"},
-  {jp:"ちかい", id:"DEKAT"},
-  {jp:"とおい", id:"JAUH"},
-  {jp:"はやい", id:"CEPAT"},
-  {jp:"おそい", id:"LAMBAT"},
-  {jp:"おおい", id:"BANYAK"},
-  {jp:"すくない", id:"SEDIKIT"},
-  {jp:"あたたかい", id:"HANGAT"},
-  {jp:"すずしい", id:"SEJUK"},
-  {jp:"ながい", id:"PANJANG"},
-  {jp:"みじかい", id:"PENDEK"},
-  {jp:"おもい", id:"BERAT"},
-  {jp:"かるい", id:"RINGAN"},
-  {jp:"あまい", id:"MANIS"},
-  {jp:"からい", id:"PEDAS"},
-  {jp:"ひまな", id:"SENGGANG"},
-  {jp:"いそがしい", id:"SIBUK"},
-  {jp:"わかい", id:"MUDA"},
-  {jp:"としうえの", id:"TUA"},
-  {jp:"たいせつな", id:"PENTING"},
-  {jp:"ほしい", id:"INGIN"},
-  {jp:"あかるい", id:"TERANG"},
-  {jp:"くらい", id:"GELAP"},
-  {jp:"ひろい", id:"LUAS"},
-  {jp:"せまい", id:"SEMPIT"},
-  {jp:"べんりな", id:"PRAKTIS"},
-  {jp:"ふべんな", id:"TIDAK PRAKTIS"},
-  {jp:"かんたんな", id:"SEDERHANA"},
-  {jp:"ふくざつな", id:"RUMIT"},
-  {jp:"せがたかい", id:"TINGGI (BADAN)"},
-  {jp:"せがひくい", id:"PENDEK (BADAN)"},
-  {jp:"あぶない", id:"BERBAHAYA"},
-  {jp:"うれしい", id:"SENANG"},
-  {jp:"かなしい", id:"SEDIH"},
-  {jp:"さびしい", id:"KESEPIAN"},
-  {jp:"ねむい", id:"MENGANTUK"},
-];
-
-// Note: no.22 たかい means MAHAL, no.20 TINGGI — both valid, quiz uses index
-// Tambah index unik buat no.20 dan 22
-const vocabIndexed = vocab.map((v,i) => ({...v, no: i+1}));
-
-// ── SEGMEN 1 ──
-function renderVocab(list) {
-  const g = document.getElementById('vocabGrid');
-  g.innerHTML = list.map(v => `
-    <div class="vocab-card">
-      <div class="vocab-no">${String(v.no).padStart(2,'0')}</div>
-      <div class="vocab-jp">${v.jp}</div>
-      <div class="vocab-id">${v.id}</div>
-    </div>`).join('');
+  </div>`;
 }
-renderVocab(vocabIndexed);
-
-function filterVocab() {
-  const q = document.getElementById('searchInput').value.toLowerCase();
-  renderVocab(vocabIndexed.filter(v =>
-    v.jp.includes(q) || v.id.toLowerCase().includes(q)
-  ));
-}
-
-// ── SEGMEN 2 FLASHCARD ──
-let fcOrder = [...vocabIndexed];
-let fcIdx = 0;
-let fcFlipped = false;
-
-function renderFlash() {
+function ks_fcBind() { ks_fcRender(); }
+function ks_fcRender() {
   const v = fcOrder[fcIdx];
-  document.getElementById('fcFront').textContent = v.jp;
-  document.getElementById('fcBack').textContent = v.id;
-  document.getElementById('fcCounter').textContent = `${fcIdx+1} / ${fcOrder.length}`;
-  document.getElementById('fcBar').style.width = `${((fcIdx+1)/fcOrder.length)*100}%`;
-  // reset flip
+  document.getElementById('fc-front').textContent = v.jp;
+  document.getElementById('fc-back').textContent  = v.id;
+  document.getElementById('fc-ctr').textContent   = `${fcIdx+1} / ${fcOrder.length}`;
+  document.getElementById('fc-bar').style.width   = `${((fcIdx+1)/fcOrder.length)*100}%`;
   fcFlipped = false;
-  document.getElementById('fcInner').classList.remove('flipped');
+  document.getElementById('fc-inner').classList.remove('flipped');
 }
+window.ks_flip    = () => { fcFlipped=!fcFlipped; document.getElementById('fc-inner').classList.toggle('flipped',fcFlipped); };
+window.ks_fcNext  = () => { if(fcIdx<fcOrder.length-1){fcIdx++;ks_fcRender();} };
+window.ks_fcPrev  = () => { if(fcIdx>0){fcIdx--;ks_fcRender();} };
+window.ks_shuffle = () => { fcOrder=[...DATA].sort(()=>Math.random()-.5);fcIdx=0;ks_fcRender(); };
 
-function flipCard() {
-  fcFlipped = !fcFlipped;
-  document.getElementById('fcInner').classList.toggle('flipped', fcFlipped);
+/* ── QUIZ ── */
+function ks_qzHTML() {
+  return `
+  <div class="qz-wrap">
+    <div class="qz-score">
+      <div class="pill pc">✓ <span id="qz-ok">0</span></div>
+      <div class="pill pw">✗ <span id="qz-ng">0</span></div>
+      <span class="fc-ctr" id="qz-ctr">0 / ${TOTAL}</span>
+    </div>
+    <div class="pbar-wrap" style="max-width:500px"><div class="pbar" id="qz-bar" style="width:0%"></div></div>
+    <div class="qz-card" id="qz-card">
+      <div class="qz-lbl">Arti dalam bahasa Indonesia</div>
+      <div class="qz-prompt" id="qz-prompt"></div>
+      <div class="qz-sub" id="qz-sub"></div>
+      <input class="qz-input" id="qz-input" placeholder="tulis di sini..."
+        autocomplete="off" onkeydown="if(event.key==='Enter')ks_check()">
+      <button class="qz-btn" id="qz-submit" onclick="ks_check()">Cek Jawaban</button>
+    </div>
+    <div class="qz-fb" id="qz-fb">
+      <div id="qz-fb-txt"></div>
+      <div class="qz-fb-ans" id="qz-fb-ans"></div>
+    </div>
+    <button class="qz-next" id="qz-next" onclick="ks_qzNext()">Soal berikutnya →</button>
+    <div class="qz-result" id="qz-result">
+      <div class="res-emoji" id="res-emoji">🎉</div>
+      <div class="res-title" id="res-title"></div>
+      <div class="res-sub"   id="res-sub"></div>
+      <div class="res-stats">
+        <div class="res-stat"><div class="res-n" style="color:var(--green)" id="res-ok">0</div><div class="res-l">Benar</div></div>
+        <div class="res-stat"><div class="res-n" style="color:var(--red)"   id="res-ng">0</div><div class="res-l">Salah</div></div>
+        <div class="res-stat"><div class="res-n" style="color:var(--yellow)" id="res-pct">0%</div><div class="res-l">Skor</div></div>
+      </div>
+      <button class="res-restart" onclick="ks_qzRestart()">Ulangi Quiz</button>
+    </div>
+  </div>`;
 }
-
-function nextCard() {
-  if (fcIdx < fcOrder.length-1) { fcIdx++; renderFlash(); }
+function ks_qzStart() {
+  qOrder=[...DATA].sort(()=>Math.random()-.5);qIdx=0;qOk=0;qNg=0;
+  ks_qzRender();
 }
-function prevCard() {
-  if (fcIdx > 0) { fcIdx--; renderFlash(); }
-}
-function shuffleFlash() {
-  fcOrder = [...vocabIndexed].sort(() => Math.random()-0.5);
-  fcIdx = 0;
-  renderFlash();
-}
-renderFlash();
-
-// ── SEGMEN 3 QUIZ ──
-let qOrder = [];
-let qIdx = 0;
-let qCorrectCount = 0;
-let qWrongCount = 0;
-let qAnswered = false;
-
-function startQuiz() {
-  qOrder = [...vocabIndexed].sort(() => Math.random()-0.5);
-  qIdx = 0; qCorrectCount = 0; qWrongCount = 0;
-  document.getElementById('quizResult').classList.remove('show');
-  document.getElementById('quizCard').style.display = 'flex';
-  renderQuiz();
-}
-
-function renderQuiz() {
-  qAnswered = false;
+function ks_qzRender() {
   const v = qOrder[qIdx];
-  document.getElementById('qPrompt').textContent = v.id;
-
-  // sub hint: kalau katakana kasih hint
-  const hasKatakana = /[\u30A0-\u30FF]/.test(v.jp);
-  document.getElementById('qSub').textContent = hasKatakana
-    ? 'Tulis dalam katakana'
-    : 'Tulis dalam hiragana';
-
-  const inp = document.getElementById('qInput');
-  inp.value = '';
-  inp.className = 'quiz-input';
-  inp.disabled = false;
-  inp.focus();
-
-  document.getElementById('qSubmit').disabled = false;
-  document.getElementById('qFeedback').className = 'quiz-feedback';
-  document.getElementById('qNext').className = 'quiz-next-btn';
-  document.getElementById('qCounter').textContent = `${qIdx+1} / ${qOrder.length}`;
-  document.getElementById('qBar').style.width = `${((qIdx)/qOrder.length)*100}%`;
-  updateScoreUI();
+  const kata = /[\u30A0-\u30FF]/.test(v.jp);
+  document.getElementById('qz-prompt').textContent = v.id;
+  document.getElementById('qz-sub').textContent = kata ? 'Tulis dalam katakana' : 'Tulis dalam hiragana';
+  const inp = document.getElementById('qz-input');
+  inp.value='';inp.className='qz-input';inp.disabled=false;inp.focus();
+  document.getElementById('qz-submit').disabled=false;
+  document.getElementById('qz-fb').className='qz-fb';
+  document.getElementById('qz-next').className='qz-next';
+  document.getElementById('qz-ctr').textContent=`${qIdx+1} / ${qOrder.length}`;
+  document.getElementById('qz-bar').style.width=`${(qIdx/qOrder.length)*100}%`;
+  ks_scoreUI();
 }
-
-function updateScoreUI() {
-  document.getElementById('qCorrect').textContent = qCorrectCount;
-  document.getElementById('qWrong').textContent = qWrongCount;
-}
-
-function submitAnswer() {
-  if (qAnswered) return;
-  qAnswered = true;
-  const v = qOrder[qIdx];
-  const inp = document.getElementById('qInput');
+window.ks_check = function() {
+  const v   = qOrder[qIdx];
+  const inp = document.getElementById('qz-input');
   const ans = inp.value.trim();
-  const correct = ans === v.jp;
-
-  inp.disabled = true;
-  if (correct) {
-    inp.classList.add('correct');
-    qCorrectCount++;
-    showFeedback(true, v.jp);
-  } else {
-    inp.classList.add('wrong');
-    qWrongCount++;
-    showFeedback(false, v.jp);
-  }
-  document.getElementById('qSubmit').disabled = true;
-  document.getElementById('qNext').className = 'quiz-next-btn show';
-  updateScoreUI();
-}
-
-function showFeedback(correct, answer) {
-  const fb = document.getElementById('qFeedback');
-  const ft = document.getElementById('qFeedbackText');
-  const fa = document.getElementById('qFeedbackAnswer');
-  fb.className = 'quiz-feedback show ' + (correct ? 'correct' : 'wrong');
-  ft.textContent = correct ? '✓ Benar!' : '✗ Jawaban yang benar:';
-  fa.textContent = correct ? '' : answer;
-}
-
-function nextQuiz() {
+  const ok  = ans === v.jp;
+  inp.disabled=true;
+  inp.classList.add(ok?'ok':'no');
+  if(ok) qOk++; else qNg++;
+  document.getElementById('qz-submit').disabled=true;
+  const fb=document.getElementById('qz-fb');
+  fb.className='qz-fb show '+(ok?'ok':'no');
+  document.getElementById('qz-fb-txt').textContent=ok?'✓ Benar!':'✗ Jawaban yang benar:';
+  document.getElementById('qz-fb-ans').textContent=ok?'':v.jp;
+  document.getElementById('qz-next').className='qz-next show';
+  ks_scoreUI();
+};
+window.ks_qzNext = function() {
   qIdx++;
-  if (qIdx >= qOrder.length) {
-    showResult();
-  } else {
-    renderQuiz();
-  }
+  if(qIdx>=qOrder.length) ks_result();
+  else ks_qzRender();
+};
+function ks_scoreUI() {
+  document.getElementById('qz-ok').textContent=qOk;
+  document.getElementById('qz-ng').textContent=qNg;
 }
-
-function showResult() {
-  document.getElementById('quizCard').style.display = 'none';
-  document.getElementById('qFeedback').className = 'quiz-feedback';
-  document.getElementById('qNext').className = 'quiz-next-btn';
-  const pct = Math.round((qCorrectCount/qOrder.length)*100);
-  const res = document.getElementById('quizResult');
-  res.classList.add('show');
-  document.getElementById('rCorrect').textContent = qCorrectCount;
-  document.getElementById('rWrong').textContent = qWrongCount;
-  document.getElementById('rPct').textContent = pct+'%';
-  document.getElementById('resultEmoji').textContent = pct>=80?'🎉':pct>=50?'💪':'📖';
-  document.getElementById('resultTitle').textContent = pct>=80?'Keren banget!':pct>=50?'Lumayan, terus latihan!':'Yuk belajar lagi!';
-  document.getElementById('resultSub').textContent = `Skor kamu ${pct}% dari 70 kata sifat`;
-  document.getElementById('qBar').style.width = '100%';
-  updateScoreUI();
+function ks_result() {
+  document.getElementById('qz-card').style.display='none';
+  document.getElementById('qz-fb').className='qz-fb';
+  document.getElementById('qz-next').className='qz-next';
+  const pct=Math.round((qOk/qOrder.length)*100);
+  const r=document.getElementById('qz-result');r.classList.add('show');
+  document.getElementById('res-ok').textContent=qOk;
+  document.getElementById('res-ng').textContent=qNg;
+  document.getElementById('res-pct').textContent=pct+'%';
+  document.getElementById('res-emoji').textContent=pct>=80?'🎉':pct>=50?'💪':'📖';
+  document.getElementById('res-title').textContent=pct>=80?'Keren banget!':pct>=50?'Terus semangat!':'Yuk belajar lagi!';
+  document.getElementById('res-sub').textContent=`Skor kamu ${pct}% dari ${TOTAL} soal`;
+  document.getElementById('qz-bar').style.width='100%';
 }
+window.ks_qzRestart=function(){
+  document.getElementById('qz-card').style.display='flex';
+  document.getElementById('qz-result').classList.remove('show');
+  ks_qzStart();
+};
 
-function restartQuiz() {
-  document.getElementById('quizCard').style.display = 'flex';
-  document.getElementById('quizResult').classList.remove('show');
-  startQuiz();
-}
+/* ── AUTO LOAD ── */
+window.addEventListener('load', () => App.navigate('kata-sifat'));
 
-startQuiz();
-
-// ── PAGE SWITCH ──
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  const idx = {list:0,flash:1,quiz:2}[id];
-  document.querySelectorAll('.tab-btn')[idx].classList.add('active');
-}
+})(); // end kata-sifat module
+/* ════════════════════════════════════════════════════════════════
+   SELESAI — KATA SIFAT
+   Untuk halaman baru, copy blok di atas, ganti PAGE_ID, PAGE_TITLE, DATA
+   dan prefix fungsi (ks_ → kb_ untuk kata benda, dst)
+════════════════════════════════════════════════════════════════ */
 </script>
 </body>
 </html>
