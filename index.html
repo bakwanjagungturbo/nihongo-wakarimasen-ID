@@ -773,14 +773,14 @@ function ks_qzHTML() {
       <div class="qz-prompt" id="qz-prompt"></div>
       <div class="qz-sub" id="qz-sub"></div>
       <input class="qz-input" id="qz-input" placeholder="tulis di sini..."
-        autocomplete="off" onkeydown="if(event.key==='Enter')ks_check()">
+        onkeydown="if(event.key==='Enter'){event.preventDefault();ks_check();}"
       <button class="qz-btn" id="qz-submit" onclick="ks_check()">Cek Jawaban</button>
     </div>
     <div class="qz-fb" id="qz-fb">
       <div id="qz-fb-txt"></div>
       <div class="qz-fb-ans" id="qz-fb-ans"></div>
     </div>
-    <button class="qz-next" id="qz-next" onclick="ks_qzNext()">Soal berikutnya →</button>
+    <button class="qz-next" id="qz-next" onclick="ks_qzNext()" onkeydown="event.preventDefault()">Soal berikutnya →</button>
     <div class="qz-result" id="qz-result">
       <div class="res-emoji" id="res-emoji">🎉</div>
       <div class="res-title" id="res-title"></div>
