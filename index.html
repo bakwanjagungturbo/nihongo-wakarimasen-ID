@@ -712,7 +712,7 @@ const DATA = [
   {jp:'ハンサムな',  id:'TAMPAN'},
   {jp:'しんせつな',  id:'BAIK HATI / RAMAH'},
   {jp:'げんきな',    id:'SEHAT'},
-  {jp:'ゆめいna',    id:'TERKENAL'},
+  {jp:'ゆめいな',    id:'TERKENAL'},
   {jp:'にぎやかな',  id:'RAMAI'},
   {jp:'しずかな',    id:'TENANG / SEPI'},
   {jp:'たのしい',    id:'GEMBIRA'},
@@ -739,7 +739,7 @@ const DATA = [
   {jp:'くろい',      id:'HITAM'},
   {jp:'あかい',      id:'MERAH'},
   {jp:'あおい',      id:'BIRU'},
-  {jp:'すkiな',      id:'SUKA'},
+  {jp:'すきな',      id:'SUKA'},
   {jp:'きらいな',    id:'BENCI'},
   {jp:'じょうずな',  id:'PANDAI'},
   {jp:'へたな',      id:'BODOH'},
@@ -748,17 +748,17 @@ const DATA = [
   {jp:'はやい',      id:'CEPAT'},
   {jp:'おそい',      id:'LAMBAT'},
   {jp:'おおい',      id:'BANYAK'},
-  {jp:'す少ない',    id:'SEDIKIT'},
+  {jp:'すくない',    id:'SEDIKIT'},
   {jp:'あたたかい',  id:'HANGAT'},
   {jp:'すずしい',    id:'SEJUK'},
   {jp:'ながい',      id:'PANJANG'},
   {jp:'みじかい',    id:'PENDEK'},
-  {jp:'おmoい',      id:'BERAT'},
+  {jp:'おもい',      id:'BERAT'},
   {jp:'かるい',      id:'RINGAN'},
   {jp:'あまい',      id:'MANIS'},
   {jp:'からい',      id:'PEDAS'},
   {jp:'ひまな',      id:'SENGGANG'},
-  {jp:'いそ가しい',  id:'SIBUK'},
+  {jp:'いそがしい',  id:'SIBUK'},
   {jp:'わかい',      id:'MUDA'},
   {jp:'としうえの',  id:'TUA'},
   {jp:'たいせつな',  id:'PENTING'},
@@ -767,12 +767,12 @@ const DATA = [
   {jp:'くらい',      id:'GELAP'},
   {jp:'ひろい',      id:'LUAS'},
   {jp:'せまい',      id:'SEMPIT'},
-  {jp:'べんriな',    id:'PRAKTIS'},
+  {jp:'べんりな',    id:'PRAKTIS'},
   {jp:'ふべんな',    id:'TIDAK PRAKTIS'},
   {jp:'かんたんな',  id:'SEDERHANA'},
   {jp:'ふくざつな',  id:'RUMIT'},
-  {jp:'せ가たかい',  id:'TINGGI (BADAN)'},
-  {jp:'せ가ひくい',  id:'PENDEK (BADAN)'},
+  {jp:'せがたかい',  id:'TINGGI (BADAN)'},
+  {jp:'せがひくい',  id:'PENDEK (BADAN)'},
   {jp:'あぶない',    id:'BERBAHAYA'},
   {jp:'うれしい',    id:'SENANG'},
   {jp:'かなしい',    id:'SEDIH'},
@@ -795,9 +795,9 @@ App.register(PAGE_ID, function(root) {
       <p>${TOTAL} kata sifat</p>
     </div>
     <div class="seg-tabs">
-      <button class="seg-tab on"  id="tab-daftar"    onclick="ks_seg('daftar')">① Daftar</button>
-      <button class="seg-tab"     id="tab-flashcard" onclick="ks_seg('flashcard')">② Flashcard</button>
-      <button class="seg-tab"     id="tab-quiz"      onclick="ks_seg('quiz')">③ Quiz</button>
+      <button class="seg-tab on"  id="tab-daftar"    onclick="ks_seg('daftar')">Daftar</button>
+      <button class="seg-tab"     id="tab-flashcard" onclick="ks_seg('flashcard')">Flashcard</button>
+      <button class="seg-tab"     id="tab-quiz"      onclick="ks_seg('quiz')">Quiz</button>
     </div>
     <div id="ks-body"></div>
   `;
@@ -827,7 +827,9 @@ function ks_daftar() {
       <div class="vc-jp">${v.jp}</div>
       <div style="display:flex;justify-content:space-between;align-items:center">
         <div class="vc-id">${v.id}</div>
-        <button onclick="speak('${v.jp}')" style="background:none;border:none;cursor:pointer;font-size:15px;color:var(--muted)" title="Dengar">🔊</button>
+        <button onclick="speak('${v.jp}')" style="background:none;border:none;cursor:pointer;font-size:18px;color:var(--muted);display:flex;align-items:center;justify-content:center" title="Dengar">
+          <span class="material-symbols-rounded" style="font-size:20px;">volume_up</span>
+        </button>
       </div>
     </div>`).join('');
   return `
@@ -851,7 +853,9 @@ function ks_fcHTML() {
   <div class="fc-wrap">
     <div class="fc-meta">
       <span class="fc-ctr" id="fc-ctr">1 / ${TOTAL}</span>
-      <button class="fc-shuffle" onclick="ks_shuffle()">🔀 Acak</button>
+      <button class="fc-shuffle" onclick="ks_shuffle()">
+       <span class="material-symbols-rounded" style="font-size:18px;vertical-align:middle">shuffle</span> Acak
+      </button>
     </div>
     <div class="pbar-wrap"><div class="pbar" id="fc-bar" style="width:${100/TOTAL}%"></div></div>
     <div class="fc-scene" onclick="ks_flip()">
@@ -868,9 +872,15 @@ function ks_fcHTML() {
       </div>
     </div>
     <div class="fc-btns">
-      <button class="fc-btn" onclick="ks_fcPrev()">← Prev</button>
-      <button class="fc-btn" id="fc-speak-btn" onclick="ks_speak()" title="Dengar">🔊</button>
-      <button class="fc-btn" onclick="ks_fcNext()">Next →</button>
+      <button class="fc-btn" onclick="ks_fcPrev()">
+        <span class="material-symbols-rounded" style="font-size:20px;">chevron_left</span> Prev
+      </button>
+      <button class="fc-btn" id="fc-speak-btn" onclick="ks_speak()" title="Dengar">
+        <span class="material-symbols-rounded" style="font-size:20px;">volume_up</span>
+      </button>
+      <button class="fc-btn" onclick="ks_fcNext()">
+        Next <span class="material-symbols-rounded" style="font-size:20px;">chevron_right</span>
+      </button>
     </div>
   </div>`;
 }
