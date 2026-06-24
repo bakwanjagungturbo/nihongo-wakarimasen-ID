@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>にほんご — Belajar Bahasa Jepang</title>
+<!-- GOOGLE MATERIAL SYMBOLS (ROUNDED) -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 <style>
 /* ════════════════════════════════════════
    THEME VARIABLES
@@ -29,6 +31,8 @@
   --red:      #f87171; --rbg: rgba(248,113,113,0.1);
   --yellow:   #fbbf24;
   --tog-off:  #2a2a3a;
+  --gradient-1: #1e1b4b;
+  --gradient-2: #311042;
 }
 [data-theme="light"] {
   --bg:       #f0f0f7;
@@ -49,10 +53,12 @@
   --red:      #dc2626; --rbg: rgba(220,38,38,0.08);
   --yellow:   #b45309;
   --tog-off:  #d0d0e4;
+  --gradient-1: #e0e0ff;
+  --gradient-2: #fae8ff;
 }
 
 /* ════════════════════════════════════════
-   RESET
+   RESET & LAYOUT
 ════════════════════════════════════════ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .2s,color .2s}
@@ -60,8 +66,23 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 ul{list-style:none}
 input{font-family:inherit}
 
+/* Dynamic Fullscreen Moving Fluid Gradient khusus Landing Page */
+body.home-active {
+  background: radial-gradient(circle at 15% 25%, var(--gradient-1) 0%, transparent 50%),
+              radial-gradient(circle at 85% 75%, var(--gradient-2) 0%, transparent 55%),
+              var(--bg);
+  background-size: 200% 200%;
+  animation: appleFluidGradient 16s ease-in-out infinite alternate;
+}
+
+@keyframes appleFluidGradient {
+  0% { background-position: 0% 0%; }
+  50% { background-position: 100% 100%; }
+  100% { background-position: 0% 100%; }
+}
+
 /* ════════════════════════════════════════
-   OVERLAY
+   OVERLAY & MATERIAL ALIGNMENT
 ════════════════════════════════════════ */
 #overlay{
   display:none;position:fixed;inset:0;
@@ -70,8 +91,14 @@ input{font-family:inherit}
 }
 #overlay.show{display:block}
 
+.material-symbols-rounded {
+  font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+  display: inline-block;
+  vertical-align: middle;
+}
+
 /* ════════════════════════════════════════
-   SIDEBAR
+   SIDEBAR (HAMBURGER MENU)
 ════════════════════════════════════════ */
 #sidebar{
   position:fixed;top:0;left:0;
@@ -91,17 +118,16 @@ input{font-family:inherit}
   border-bottom:1px solid var(--border);
   flex-shrink:0;
 }
-.sb-logo{font-size:15px;font-weight:700;color:var(--accent2);letter-spacing:-.3px}
+.sb-logo{font-size:15px;font-weight:700;color:var(--accent2);letter-spacing:-.3px;display:flex;align-items:center;gap:6px}
 .sb-close{
-  color:var(--muted);font-size:14px;
-  padding:5px 9px;border-radius:7px;
+  color:var(--muted);font-size:18px;
+  padding:4px 8px;border-radius:7px;
+  display:flex;align-items:center;justify-content:center;
   transition:background .15s,color .15s;
 }
 .sb-close:hover{background:var(--bg3);color:var(--text)}
 
-/* NAV */
 .sb-nav{flex:1;overflow-y:auto;padding:8px 8px;scrollbar-width:thin;scrollbar-color:var(--border2) transparent}
-
 .nav-section{margin-bottom:2px}
 .nav-section-btn{
   width:100%;display:flex;align-items:center;justify-content:space-between;
@@ -110,45 +136,46 @@ input{font-family:inherit}
   transition:background .15s;
 }
 .nav-section-btn:hover{background:var(--bg3)}
-.nav-section-btn .icon{font-size:14px;margin-right:6px}
-.chevron{font-size:10px;color:var(--muted);transition:transform .2s;display:inline-block}
+.nav-section-label-wrapper { display:flex; align-items:center; gap:8px; }
+.nav-section-btn .icon { font-size:18px; color:var(--accent2); }
+
+.chevron{font-size:18px;color:var(--muted);transition:transform .2s;display:inline-block}
 .chevron.open{transform:rotate(90deg)}
 
 .nav-children{overflow:hidden;max-height:0;transition:max-height .25s ease}
 .nav-children.open{max-height:400px}
 
 .nav-child-btn{
-  display:block;width:100%;text-align:left;
-  padding:7px 10px 7px 30px;
+  display:flex;align-items:center;justify-content:space-between;
+  width:100%;text-align:left;
+  padding:7px 10px 7px 34px;
   border-radius:7px;font-size:13px;color:var(--muted);
   transition:background .12s,color .12s;margin:1px 0;
 }
 .nav-child-btn:hover:not(.soon){background:var(--bg3);color:var(--text)}
 .nav-child-btn.active{background:var(--acbg);color:var(--accent2);font-weight:500}
 .nav-child-btn.soon{opacity:.4;cursor:default}
-.nav-child-btn.soon::after{content:' 🔒';font-size:10px}
+.nav-child-btn .lock-icon { font-size:14px; color:var(--muted); }
 
-/* THEME TOGGLE */
-.sb-footer{
-  padding:13px 14px;
-  border-top:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;
-  flex-shrink:0;
+.sb-footer {
+  padding: 13px 14px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
 }
-.sb-footer-label{font-size:12px;color:var(--muted)}
-.tog{position:relative;display:inline-block;width:38px;height:21px}
-.tog input{opacity:0;width:0;height:0}
-.tog-track{
-  position:absolute;inset:0;background:var(--tog-off);
-  border-radius:99px;cursor:pointer;transition:background .2s;
+.sb-footer-label { font-size: 11px; color: var(--muted); text-align: center; }
+.moe-counter-wrap { margin-top: 5px; display: flex; justify-content: center; width: 100%; }
+.moe-counter-wrap img { max-height: 35px; object-fit: contain; }
+
+.btn-pop { animation: pressPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+@keyframes pressPop {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.72); }
+  100% { transform: scale(1); }
 }
-.tog-track::before{
-  content:'';position:absolute;
-  width:15px;height:15px;left:3px;top:3px;
-  background:#fff;border-radius:50%;transition:transform .2s;
-}
-input:checked+.tog-track{background:var(--accent)}
-input:checked+.tog-track::before{transform:translateX(17px)}
 
 /* ════════════════════════════════════════
    TOPBAR
@@ -172,18 +199,77 @@ input:checked+.tog-track::before{transform:translateX(17px)}
    MAIN + CONTENT
 ════════════════════════════════════════ */
 .main{min-height:100vh;display:flex;flex-direction:column}
-#content{flex:1;padding:26px 22px;max-width:980px;margin:0 auto;width:100%}
+#content{flex:1;padding:26px 22px;max-width:980px;margin:0 auto;width:100%;position:relative;}
 
 /* ════════════════════════════════════════
-   SHARED COMPONENTS
+   LANDING PAGE / HOME (EXTREME MINIMALIST)
 ════════════════════════════════════════ */
+.home-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: calc(100vh - var(--th) - 60px);
+  padding: 10px 0;
+  position: relative;
+}
 
-/* Page header */
+.home-typography {
+  text-align: left;
+  line-height: 0.95;
+  letter-spacing: -3px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.home-line {
+  display: block;
+  font-size: clamp(48px, 11vw, 92px);
+}
+
+.home-line.small-sub {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+/* Kustomisasi Teks Pengganti Saya yang Diperbesar */
+.home-subtext {
+  font-size: clamp(18px, 4vw, 28px);
+  font-weight: 600;
+  color: var(--accent2);
+  letter-spacing: -0.5px;
+  margin-bottom: 10px;
+}
+
+/* Modifikasi Desain Kotak Rounded & Perubahan Warna Interaktif */
+.home-btn-start {
+  background: var(--text);
+  color: var(--bg);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 8px;
+  margin-top: 26px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: background-color 0.25s, color 0.25s, transform 0.15s;
+}
+.home-btn-start:hover {
+  background: var(--accent);
+  color: #ffffff;
+}
+.home-btn-start:active {
+  background: var(--accent2);
+  transform: scale(0.96);
+}
+
+/* ════════════════════════════════════════
+   SHARED COMPONENTS (VOCAB, FC, QUIZ)
+════════════════════════════════════════ */
 .ph{margin-bottom:20px}
 .ph h2{font-size:21px;font-weight:700;letter-spacing:-.4px}
 .ph p{color:var(--muted);font-size:13px;margin-top:3px}
 
-/* Segment tabs */
 .seg-tabs{
   display:flex;gap:3px;margin-bottom:20px;
   background:var(--bg3);padding:3px;
@@ -197,7 +283,6 @@ input:checked+.tog-track::before{transform:translateX(17px)}
 .seg-tab:hover{color:var(--text)}
 .seg-tab.on{background:var(--bg2);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.15)}
 
-/* Search */
 .search{
   width:100%;padding:10px 14px;
   border-radius:10px;border:1px solid var(--border2);
@@ -208,7 +293,6 @@ input:checked+.tog-track::before{transform:translateX(17px)}
 .search:focus{border-color:var(--accent)}
 .search::placeholder{color:var(--muted)}
 
-/* Vocab grid */
 .vocab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:9px}
 .vc{
   background:var(--bg2);border:1px solid var(--border);
@@ -340,13 +424,11 @@ input:checked+.tog-track::before{transform:translateX(17px)}
 }
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* ════════════════════════════════════════
-   RESPONSIVE
-════════════════════════════════════════ */
 @media(max-width:600px){
   #content{padding:16px 13px}
   .vocab-grid{grid-template-columns:repeat(2,1fr)}
   .fc-main{font-size:34px}
+  .home-typography { letter-spacing: -1.5px; }
 }
 </style>
 </head>
@@ -357,39 +439,54 @@ input:checked+.tog-track::before{transform:translateX(17px)}
 <!-- ── SIDEBAR ── -->
 <aside id="sidebar">
   <div class="sb-head">
-    <span class="sb-logo">🇯🇵 にほんご</span>
-    <button class="sb-close" onclick="closeSidebar()">✕</button>
+    <span class="sb-logo" style="font-size:20px;font-weight:700">こんにちは!</span>
+    <button class="sb-close" onclick="closeSidebar()">
+      <span class="material-symbols-rounded" style="font-size:24px">close</span>
+    </button>
   </div>
 
   <nav class="sb-nav" id="sb-nav">
-    <!-- Menu dirender oleh JS — tambah item di MENU_CONFIG di bawah -->
+    <!-- Menu dirender oleh JS -->
   </nav>
 
   <div class="sb-footer">
-    <span class="sb-footer-label" id="theme-lbl">🌙 Dark Mode</span>
-    <label class="tog">
-      <input type="checkbox" id="theme-tog" onchange="toggleTheme()">
-      <span class="tog-track"></span>
-    </label>
+    <!-- MOE COUNTER (BOORU-LEWD) -->
+    <div class="moe-counter-wrap">
+      <img src="https://count.getloli.com/get/@bakwanjagungturbo-nihongo?theme=booru-lewd" alt="Visitor Counter">
+    </div>
+    <span class="sb-footer-label">yondaktaukoktanyasaya</span>
   </div>
 </aside>
 
-<!-- ── MAIN ── -->
+<!-- ── MAIN CONTAINER ── -->
 <div class="main">
   <header id="topbar">
     <button class="hbg" onclick="openSidebar()">
       <span></span><span></span><span></span>
     </button>
-    <span id="topbar-title">にほんご</span>
-    <button onclick="toggleFS()" id="fs-btn" style="margin-left:auto;padding:6px 10px;border-radius:7px;background:none;border:1px solid var(--border2);color:var(--muted);font-size:13px;cursor:pointer;transition:all .15s" title="Fullscreen">⛶</button>
+    <span id="topbar-title">Home</span>
+
+    <!-- GANTI MENJADI INI -->
+    <div style="margin-left: auto;"></div>
+    
+    <!-- TOMBOL THEME (GOOGLE MATERIAL ICON) -->
+    <button onclick="toggleTheme()" id="theme-btn" style="padding:6px 10px; border-radius:7px; background:none; border:1px solid var(--border2); color:var(--muted); font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .15s" title="Ubah Tema">
+      <span id="theme-icon" class="material-symbols-rounded" style="font-size:20px;">dark_mode</span>
+    </button>
+    
+    <!-- TOMBOL FULLSCREEN -->
+    <button onclick="toggleFS()" id="fs-btn" style="padding:6px 10px; border-radius:7px; background:none; border:1px solid var(--border2); color:var(--muted); font-size:13px; cursor:pointer; transition:all .15s" title="Fullscreen">⛶</button>
   </header>
-  <main id="content"><p style="color:var(--muted);text-align:center;margin-top:60px">Memuat...</p></main>
+  
+  <main id="content">
+    <p style="color:var(--muted);text-align:center;margin-top:60px">Memuat...</p>
+  </main>
 </div>
 
 <div id="toast"></div>
 
 <script>
-  function toggleFS() {
+function toggleFS() {
   if (!document.fullscreenElement) {
     document.documentElement.requestFullscreen();
     document.getElementById('fs-btn').textContent = '✕';
@@ -398,13 +495,13 @@ input:checked+.tog-track::before{transform:translateX(17px)}
     document.getElementById('fs-btn').textContent = '⛶';
   }
 }
+
 /* ════════════════════════════════════════
-   MENU CONFIG
-   ↓ EDIT DI SINI UNTUK TAMBAH MENU BARU ↓
+   MENU CONFIG (DENGAN IKON LETTER_SWITCH)
 ════════════════════════════════════════ */
 const MENU = [
   {
-    label: '📚 Kosakata', id: 'kosakata',
+    label: 'Kosakata', id: 'kosakata', icon: 'menu_book',
     children: [
       { label: 'Kata Sifat', page: 'kata-sifat' },
       { label: 'Kata Benda', page: 'kata-benda', soon: true },
@@ -413,14 +510,14 @@ const MENU = [
     ]
   },
   {
-    label: '漢 Kanji', id: 'kanji',
+    label: 'Kanji', id: 'kanji', icon: 'letter_switch', // Diganti ke letter_switch
     children: [
       { label: 'Level N5', page: 'kanji-n5', soon: true },
       { label: 'Level N4', page: 'kanji-n4', soon: true },
     ]
   },
   {
-    label: '🔢 Angka & Waktu', id: 'angka',
+    label: 'Angka & Waktu', id: 'angka', icon: 'schedule',
     children: [
       { label: 'Angka', page: 'angka', soon: true },
       { label: 'Bulan & Tanggal', page: 'bulan', soon: true },
@@ -428,23 +525,15 @@ const MENU = [
     ]
   },
   {
-    label: '✏️ Partikel', id: 'partikel',
+    label: 'Partikel', id: 'partikel', icon: 'extension',
     children: [
       { label: 'Partikel Dasar', page: 'partikel-dasar', soon: true },
     ]
-  },
-  // ── TAMBAH SECTION BARU DI SINI ──
-  // {
-  //   label: '💬 Kaiwa', id: 'kaiwa',
-  //   children: [
-  //     { label: 'Percakapan Dasar', page: 'kaiwa-dasar', soon: true },
-  //   ]
-  // },
+  }
 ];
 
 /* ════════════════════════════════════════
    PAGE REGISTRY
-   Halaman register dirinya lewat App.register()
 ════════════════════════════════════════ */
 const _pages = {};
 const App = {
@@ -454,10 +543,16 @@ const App = {
     const content = document.getElementById('content');
     content.innerHTML = '';
     _pages[id](content);
-    // Update topbar
-    const title = findMenuLabel(id);
-    document.getElementById('topbar-title').textContent = title;
-    // Update active item
+    
+    // Manage dynamic background class on body
+    if (id === 'home') {
+      document.body.classList.add('home-active');
+      document.getElementById('topbar-title').textContent = 'Home';
+    } else {
+      document.body.classList.remove('home-active');
+      document.getElementById('topbar-title').textContent = findMenuLabel(id);
+    }
+    
     document.querySelectorAll('.nav-child-btn').forEach(b =>
       b.classList.toggle('active', b.dataset.page === id)
     );
@@ -475,15 +570,27 @@ function findMenuLabel(page) {
 }
 
 /* ════════════════════════════════════════
-   RENDER SIDEBAR NAV FROM MENU CONFIG
+   RENDER SIDEBAR NAV
 ════════════════════════════════════════ */
 function buildNav() {
   const nav = document.getElementById('sb-nav');
-  nav.innerHTML = MENU.map(sec => `
+  nav.innerHTML = `
+    <div class="nav-section" style="margin-bottom: 8px;">
+      <button class="nav-section-btn" onclick="App.navigate('home')">
+        <div class="nav-section-label-wrapper">
+          <span class="material-symbols-rounded icon">home</span>
+          <span>Home</span>
+        </div>
+      </button>
+    </div>
+  ` + MENU.map(sec => `
     <div class="nav-section">
       <button class="nav-section-btn" onclick="toggleSection('${sec.id}')">
-        <span>${sec.label}</span>
-        <span class="chevron" id="chev-${sec.id}">▸</span>
+        <div class="nav-section-label-wrapper">
+          <span class="material-symbols-rounded icon">${sec.icon}</span>
+          <span>${sec.label}</span>
+        </div>
+        <span class="material-symbols-rounded" id="chev-${sec.id}">chevron_right</span>
       </button>
       <ul class="nav-children" id="sec-${sec.id}">
         ${sec.children.map(c => `
@@ -492,7 +599,10 @@ function buildNav() {
               class="nav-child-btn${c.soon ? ' soon' : ''}"
               data-page="${c.page}"
               onclick="${c.soon ? `toast('${c.label} segera hadir! 🚧')` : `App.navigate('${c.page}')`}"
-            >${c.label}</button>
+            >
+              <span>${c.label}</span>
+              ${c.soon ? '<span class="material-symbols-rounded lock-icon">lock</span>' : ''}
+            </button>
           </li>
         `).join('')}
       </ul>
@@ -509,9 +619,6 @@ function toggleSection(id) {
   if (!wasOpen) { sec.classList.add('open'); chev.classList.add('open'); }
 }
 
-/* ════════════════════════════════════════
-   SIDEBAR OPEN / CLOSE
-════════════════════════════════════════ */
 function openSidebar()  {
   document.getElementById('sidebar').classList.add('open');
   document.getElementById('overlay').classList.add('show');
@@ -522,14 +629,28 @@ function closeSidebar() {
 }
 
 /* ════════════════════════════════════════
-   THEME
+   THEME LOGIC
 ════════════════════════════════════════ */
 function toggleTheme() {
   const html = document.documentElement;
-  const dark = html.getAttribute('data-theme') === 'dark';
-  html.setAttribute('data-theme', dark ? 'light' : 'dark');
-  document.getElementById('theme-lbl').textContent = dark ? '☀️ Light Mode' : '🌙 Dark Mode';
-  localStorage.setItem('nh-theme', dark ? 'light' : 'dark');
+  const currentTheme = html.getAttribute('data-theme');
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  
+  html.setAttribute('data-theme', newTheme);
+  localStorage.setItem('nh-theme', newTheme);
+
+  const themeIcon = document.getElementById('theme-icon');
+  const themeBtn = document.getElementById('theme-btn');
+  
+  if (themeIcon) {
+    themeIcon.textContent = newTheme === 'dark' ? 'dark_mode' : 'light_mode';
+  }
+
+  if (themeBtn) {
+    themeBtn.classList.remove('btn-pop');
+    void themeBtn.offsetWidth;
+    themeBtn.classList.add('btn-pop');
+  }
 }
 
 /* ════════════════════════════════════════
@@ -545,38 +666,53 @@ function toast(msg) {
 }
 
 /* ════════════════════════════════════════
-   INIT
+   INIT & AUTO LOAD
 ════════════════════════════════════════ */
-(function init() {
-  // Restore theme
+function init() {
+  buildNav();
+}
+
+init();
+
+window.addEventListener('load', () => {
   const saved = localStorage.getItem('nh-theme') || 'dark';
   document.documentElement.setAttribute('data-theme', saved);
-  document.getElementById('theme-lbl').textContent = saved === 'dark' ? '🌙 Dark Mode' : '☀️ Light Mode';
-  document.getElementById('theme-tog').checked = saved === 'light';
+  
+  const themeIcon = document.getElementById('theme-icon');
+  if (themeIcon) {
+    themeIcon.textContent = saved === 'dark' ? 'dark_mode' : 'light_mode';
+  }
 
-  buildNav();
-
-  // Buka section pertama by default
-  if (MENU.length) toggleSection(MENU[0].id);
-})();
-
+  App.navigate('home');
+});
 
 /* ════════════════════════════════════════════════════════════════
-   ██████████████████████████████████████████████████████████████
-   PAGE: KATA SIFAT
-   Untuk tambah halaman baru, copy blok ini dari sini sampai bawah
-   ganti id, data, dan label sesuai kebutuhan
-   ██████████████████████████████████████████████████████████████
+   PAGE MODULE: HOME / LANDING PAGE
+════════════════════════════════════════════════════════════════ */
+App.register('home', function(root) {
+  root.innerHTML = `
+    <div class="home-container">
+      <div class="home-typography">
+        <span class="home-line small-sub">Watashi <span class="home-subtext">Saya</span></span>
+        <span class="home-line" style="color: var(--accent2)">Nihongo</span>
+        <span class="home-line">YoNdakTau</span>
+      </div>
+      <button class="home-btn-start" onclick="openSidebar()">Mulai Belajar</button>
+    </div>
+  `;
+});
+
+/* ════════════════════════════════════════════════════════════════
+   PAGE MODULE: KATA SIFAT
 ════════════════════════════════════════════════════════════════ */
 ;(function() {
 
-/* ── DATA ── */
 const DATA = [
   {jp:'きれいな',    id:'CANTIK'},
   {jp:'ハンサムな',  id:'TAMPAN'},
   {jp:'しんせつな',  id:'BAIK HATI / RAMAH'},
   {jp:'げんきな',    id:'SEHAT'},
-  {jp:'ゆめいな',    id:'TERKENAL'},
+  {jp:'ゆめいna',    id:'TERKENAL'},
   {jp:'にぎやかな',  id:'RAMAI'},
   {jp:'しずかな',    id:'TENANG / SEPI'},
   {jp:'たのしい',    id:'GEMBIRA'},
@@ -603,7 +739,7 @@ const DATA = [
   {jp:'くろい',      id:'HITAM'},
   {jp:'あかい',      id:'MERAH'},
   {jp:'あおい',      id:'BIRU'},
-  {jp:'すきな',      id:'SUKA'},
+  {jp:'すkiな',      id:'SUKA'},
   {jp:'きらいな',    id:'BENCI'},
   {jp:'じょうずな',  id:'PANDAI'},
   {jp:'へたな',      id:'BODOH'},
@@ -612,17 +748,17 @@ const DATA = [
   {jp:'はやい',      id:'CEPAT'},
   {jp:'おそい',      id:'LAMBAT'},
   {jp:'おおい',      id:'BANYAK'},
-  {jp:'すくない',    id:'SEDIKIT'},
+  {jp:'す少ない',    id:'SEDIKIT'},
   {jp:'あたたかい',  id:'HANGAT'},
   {jp:'すずしい',    id:'SEJUK'},
   {jp:'ながい',      id:'PANJANG'},
   {jp:'みじかい',    id:'PENDEK'},
-  {jp:'おもい',      id:'BERAT'},
+  {jp:'おmoい',      id:'BERAT'},
   {jp:'かるい',      id:'RINGAN'},
   {jp:'あまい',      id:'MANIS'},
   {jp:'からい',      id:'PEDAS'},
   {jp:'ひまな',      id:'SENGGANG'},
-  {jp:'いそがしい',  id:'SIBUK'},
+  {jp:'いそ가しい',  id:'SIBUK'},
   {jp:'わかい',      id:'MUDA'},
   {jp:'としうえの',  id:'TUA'},
   {jp:'たいせつな',  id:'PENTING'},
@@ -631,12 +767,12 @@ const DATA = [
   {jp:'くらい',      id:'GELAP'},
   {jp:'ひろい',      id:'LUAS'},
   {jp:'せまい',      id:'SEMPIT'},
-  {jp:'べんりな',    id:'PRAKTIS'},
+  {jp:'べんriな',    id:'PRAKTIS'},
   {jp:'ふべんな',    id:'TIDAK PRAKTIS'},
   {jp:'かんたんな',  id:'SEDERHANA'},
   {jp:'ふくざつな',  id:'RUMIT'},
-  {jp:'せがたかい',  id:'TINGGI (BADAN)'},
-  {jp:'せがひくい',  id:'PENDEK (BADAN)'},
+  {jp:'せ가たかい',  id:'TINGGI (BADAN)'},
+  {jp:'せ가ひくい',  id:'PENDEK (BADAN)'},
   {jp:'あぶない',    id:'BERBAHAYA'},
   {jp:'うれしい',    id:'SENANG'},
   {jp:'かなしい',    id:'SEDIH'},
@@ -648,14 +784,10 @@ const PAGE_ID    = 'kata-sifat';
 const PAGE_TITLE = 'Kata Sifat';
 const TOTAL      = DATA.length;
 
-/* ── STATE ── */
 let seg = 'daftar';
-// flashcard
 let fcOrder = [...DATA], fcIdx = 0, fcFlipped = false;
-// quiz
-let qOrder = [], qIdx = 0, qOk = 0, qNg = 0, qDone = false;
+let qOrder = [], qIdx = 0, qOk = 0, qNg = 0;
 
-/* ── RENDER ── */
 App.register(PAGE_ID, function(root) {
   root.innerHTML = `
     <div class="ph">
@@ -688,7 +820,6 @@ function ks_renderSeg() {
   if (seg === 'quiz')      { body.innerHTML = ks_qzHTML(); ks_qzStart(); }
 }
 
-/* ── DAFTAR ── */
 function ks_daftar() {
   const cards = DATA.map(v => `
     <div class="vc">
@@ -703,6 +834,7 @@ function ks_daftar() {
     <input class="search" placeholder="Cari kata atau arti..." oninput="ks_filter(this.value)">
     <div class="vocab-grid" id="ks-grid">${cards}</div>`;
 }
+
 window.ks_filter = function(q) {
   q = q.toLowerCase();
   const filtered = DATA.filter(v => v.jp.includes(q) || v.id.toLowerCase().includes(q));
@@ -714,7 +846,6 @@ window.ks_filter = function(q) {
     </div>`).join('');
 };
 
-/* ── FLASHCARD ── */
 function ks_fcHTML() {
   return `
   <div class="fc-wrap">
@@ -743,7 +874,9 @@ function ks_fcHTML() {
     </div>
   </div>`;
 }
+
 function ks_fcBind() { ks_fcRender(); }
+
 function ks_fcRender() {
   const v = fcOrder[fcIdx];
   document.getElementById('fc-front').textContent = v.jp;
@@ -753,20 +886,19 @@ function ks_fcRender() {
   fcFlipped = false;
   document.getElementById('fc-inner').classList.remove('flipped');
   
-  // TAMBAHIN INI buat disable tombol
   const btns = document.querySelectorAll('.fc-btns .fc-btn');
-  if (btns.length >= 2) {
-    btns[0].disabled = fcIdx === 0; // Prev
-    btns[2].disabled = fcIdx === fcOrder.length - 1; // Next
+  if (btns.length >= 3) {
+    btns[0].disabled = fcIdx === 0;
+    btns[2].disabled = fcIdx === fcOrder.length - 1;
   }
 }
+
 window.ks_flip    = () => { fcFlipped=!fcFlipped; document.getElementById('fc-inner').classList.toggle('flipped',fcFlipped); };
-window.ks_speak = function() { speak(fcOrder[fcIdx].jp); };
+window.ks_speak   = function() { speak(fcOrder[fcIdx].jp); };
 window.ks_fcNext  = () => { document.activeElement?.blur(); if(fcIdx<fcOrder.length-1){fcIdx++;ks_fcRender();} };
 window.ks_fcPrev  = () => { document.activeElement?.blur(); if(fcIdx>0){fcIdx--;ks_fcRender();} };
 window.ks_shuffle = () => { fcOrder=[...DATA].sort(()=>Math.random()-.5);fcIdx=0;ks_fcRender(); };
 
-/* ── QUIZ ── */
 function ks_qzHTML() {
   return `
   <div class="qz-wrap">
@@ -802,10 +934,12 @@ function ks_qzHTML() {
     </div>
   </div>`;
 }
+
 function ks_qzStart() {
   qOrder=[...DATA].sort(()=>Math.random()-.5);qIdx=0;qOk=0;qNg=0;
   ks_qzRender();
 }
+
 function ks_qzRender() {
   const v = qOrder[qIdx];
   const kata = /[\u30A0-\u30FF]/.test(v.jp);
@@ -820,6 +954,7 @@ function ks_qzRender() {
   document.getElementById('qz-bar').style.width=`${(qIdx/qOrder.length)*100}%`;
   ks_scoreUI();
 }
+
 window.ks_check = function() {
   const v   = qOrder[qIdx];
   const inp = document.getElementById('qz-input');
@@ -836,16 +971,19 @@ window.ks_check = function() {
   document.getElementById('qz-next').className='qz-next show';
   ks_scoreUI();
 };
+
 window.ks_qzNext = function() {
   document.getElementById('qz-next').blur();
   qIdx++;
   if(qIdx>=qOrder.length) ks_result();
   else ks_qzRender();
 };
+
 function ks_scoreUI() {
   document.getElementById('qz-ok').textContent=qOk;
   document.getElementById('qz-ng').textContent=qNg;
 }
+
 function ks_result() {
   document.getElementById('qz-card').style.display='none';
   document.getElementById('qz-fb').className='qz-fb';
@@ -860,21 +998,15 @@ function ks_result() {
   document.getElementById('res-sub').textContent=`Skor kamu ${pct}% dari ${TOTAL} soal`;
   document.getElementById('qz-bar').style.width='100%';
 }
+
 window.ks_qzRestart=function(){
   document.getElementById('qz-card').style.display='flex';
   document.getElementById('qz-result').classList.remove('show');
   ks_qzStart();
 };
 
-/* ── AUTO LOAD ── */
-window.addEventListener('load', () => App.navigate('kata-sifat'));
+})();
 
-})(); // end kata-sifat module
-/* ════════════════════════════════════════════════════════════════
-   SELESAI — KATA SIFAT
-   Untuk halaman baru, copy blok di atas, ganti PAGE_ID, PAGE_TITLE, DATA
-   dan prefix fungsi (ks_ → kb_ untuk kata benda, dst)
-════════════════════════════════════════════════════════════════ */
 function speak(text) {
   const u = new SpeechSynthesisUtterance(text);
   u.lang = 'ja-JP';
